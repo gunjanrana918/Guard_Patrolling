@@ -24,6 +24,7 @@ class globaldata{
   static String qrlongitude = " ";
   static String LocationName = " ";
   static String Newcheckpointid = "";
+  static String sceduletime="";
   static String Totalroundcount = "";
   static String Dayroundmessage = "";
   static String Nightroundmessage = "";
@@ -41,4 +42,6 @@ class globaldata{
   static String Dlattitude= "";
   static String Dlongitude = "";
   static String dayerror = "";
+  static String updatemessage="";
+  static String status="";
 }

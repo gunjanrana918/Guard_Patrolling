@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:guard_patrolling/Models/DelayTime_round.dart';
-import 'package:guard_patrolling/Models/OnTime_round.dart';
 
 class Delaytimedata extends StatefulWidget {
   Delayround? delaytimedata;
@@ -25,11 +23,11 @@ class _DelaytimedataState extends State<Delaytimedata> {
             itemBuilder: (BuildContext context, int index){
                  return widget.delaytimedata!.schedule[index].error==false?
                   Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: SizedBox(
                     height: 160,
                     child: Card(
-                      margin: EdgeInsets.all(10.0),
+                      margin: EdgeInsets.all(3.0),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
                           side: BorderSide(color: Color(0xFF184f8d))),
                       shadowColor: Color(0xFF184f8d),

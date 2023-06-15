@@ -39,11 +39,11 @@ class _TodayroundState extends State<Todayround> {
                     itemBuilder: (BuildContext context, int index){
                       return widget.dayround!.schedule[index].error==false?
                       Container(
-                        height: 160,
+                        height: 150,
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: Card(
-                            margin: EdgeInsets.all(10.0),
+                            margin: EdgeInsets.all(3.0),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
                                 side: BorderSide(color: Color(0xFF184f8d))),
                             shadowColor: Color(0xFF184f8d),
@@ -63,10 +63,7 @@ class _TodayroundState extends State<Todayround> {
                                       ),
                                     ),
                                     Expanded(
-                                      child: Padding(
-                                      padding:  EdgeInsets.only(top:5.0,),
                                       child: Text(widget.dayround!.schedule[index].locationName,style: TextStyle(color: Color(0xFF184f8d),fontSize: 16.0,  ),),
-                                    ),
                                     )
                                   ],),
                                 Padding(padding: EdgeInsets.only(top: 5.0,)),
@@ -79,10 +76,8 @@ class _TodayroundState extends State<Todayround> {
                                           child: Text("Checkpoint",
                                             style: TextStyle(color: Colors.black,fontSize: 17.0,  fontWeight: FontWeight.bold ),)),
                                     ),
-                                    Expanded(child:  Padding(padding: EdgeInsets.only(top: 5.0,right: 0.0),
-                                        child: Text(widget.dayround!.schedule[index].checkPointName,softWrap: true,
-                                          style: TextStyle(color: Color(0xFF184f8d),fontSize: 17.0, ),)
-                                    ))
+                                    Expanded(child:  Text(widget.dayround!.schedule[index].checkPointName,softWrap: true,
+                                      style: TextStyle(color: Color(0xFF184f8d),fontSize: 17.0, ),))
 
                                   ],
                                 ),
@@ -108,15 +103,15 @@ class _TodayroundState extends State<Todayround> {
                       ):Text("Data not found");
                     }),
                 ListView.builder(
-                    itemCount: widget.nightround!.schedule.length,
+                    itemCount: widget.nightround?.schedule.length,
                     itemBuilder: (BuildContext context, int index){
-                      return widget.nightround!.schedule[index].error==false?
+                      return widget.nightround?.schedule[index].error==false?
                       Container(
                         height: 150,
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: Card(
-                            margin: EdgeInsets.all(10.0),
+                            margin: EdgeInsets.all(3.0),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
                                 side: BorderSide(color: Color(0xFF184f8d))),
                             shadowColor: Color(0xFF184f8d),
@@ -147,7 +142,7 @@ class _TodayroundState extends State<Todayround> {
                                           child: Text("Checkpoint",
                                             style: TextStyle(color: Colors.black,fontSize: 17.0,  fontWeight: FontWeight.bold ),)),
                                     ),
-                                    Expanded(child:  Padding(padding: EdgeInsets.only(top: 5.0,left: 0.0),
+                                    Expanded(child:  Padding(padding: EdgeInsets.only(top: 5.0,),
                                         child: Text(widget.nightround!.schedule[index].checkPointName,
                                           style: TextStyle(color: Color(0xFF184f8d),fontSize: 17.0, ),)),)],
                                 ),
@@ -168,7 +163,12 @@ class _TodayroundState extends State<Todayround> {
                             ),
                           ),
                         ),
-                      ):Text("Data not found");
+                      ):Container(
+                        child: Center(child: Padding(
+                          padding: const EdgeInsets.only(top: 18.0),
+                          child: Text(widget.nightround!.schedule[index].msg,style: TextStyle(fontSize: 17.0),),
+                        )),
+                      );
                     }),
               ],  ),
           )),

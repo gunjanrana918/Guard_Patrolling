@@ -8,6 +8,7 @@ import 'package:guard_patrolling/Models/Get_locationmodel.dart';
 import 'package:guard_patrolling/Models/Login_models.dart';
 import 'package:guard_patrolling/Models/NightSchedulemodel.dart';
 import 'package:guard_patrolling/Models/OnTime_round.dart';
+import 'package:guard_patrolling/Screens/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:guard_patrolling/universaldata.dart';
@@ -22,9 +23,12 @@ import '../Models/Missedtime_data.dart';
 import '../Models/NextRound.dart';
 import '../Models/Night_Roundhistory.dart';
 import '../Models/OTPModel_class.dart';
+import '../Models/Profile_Model.dart';
 import '../Models/Schedule.dart';
 import '../Models/Total_CompleteCount.dart';
+import '../RoundHistory/Guard_Historydetails.dart';
 import '../Screens/Dashboard.dart';
+import '../Screens/HistoryTab.dart';
 import '../Screens/verifyOTP_screen.dart';
 
 
@@ -53,9 +57,6 @@ class Logincontroller extends GetxController {
     try {
       if (response.statusCode == 200) {
         var responseData = await response.stream.bytesToString();
-        print("??????");
-        print(responseData);
-        print("??????");
         print(jsonDecode(responseData));
         if(responseData.toString().contains("Invalid")){
        var Data = responseData.toString().split(":") ;
@@ -80,7 +81,7 @@ class Logincontroller extends GetxController {
           sharedPreferences.setString('Email',Userinfo.login[index].eMail);
           sharedPreferences.setString('Address',Userinfo.login[index].address);
           sharedPreferences.setString('State',Userinfo.login[index].state);
-          sharedPreferences.setString('Pincode',Userinfo.login[index].picode);
+          sharedPreferences.setString('Picode',Userinfo.login[index].picode);
           sharedPreferences.setString('GID',Userinfo.login[index].gid);
           sharedPreferences.setString('LoginID',Userinfo.login[index].loginId);
           var loginid = sharedPreferences.getString("LoginID");
@@ -100,6 +101,11 @@ class Logincontroller extends GetxController {
           var gid = sharedPreferences.getString('GID');
           globaldata.GID = gid.toString();
           globaldata.Address = address.toString();
+          var state = sharedPreferences.getString('State');
+          globaldata.State = state.toString();
+          var pincode = sharedPreferences.getString('Picode');
+          globaldata.Picode = pincode.toString();
+          print(globaldata.Picode);
           Fluttertoast.showToast(
               msg: Userinfo.login[index].msg,
               gravity: ToastGravity.BOTTOM,
@@ -153,6 +159,102 @@ class Logincontroller extends GetxController {
 
 
 
+  }
+
+  class Profilecontroller extends GetxController{
+    TextEditingController updatename = TextEditingController();
+    TextEditingController updatemobile = TextEditingController();
+    TextEditingController updateemail = TextEditingController();
+    TextEditingController updateaddresss = TextEditingController();
+    TextEditingController updatestate = TextEditingController();
+    TextEditingController updatepincode = TextEditingController();
+    var isLoading = true.obs;
+    List<Profilemodel> list = [];
+    var error = 'error'.obs;
+    updateprofile(context) async {
+      int index = 0;
+      isLoading(true);
+      var headers = {
+        'Content-Type': 'application/json'
+      };
+      var request = http.Request('POST', Uri.parse('http://103.25.130.254/Helpdesk/Api/updateUserProfile'));
+      request.body = json.encode({
+        "UserId": globaldata.GID,
+        "Name": updatename.text,
+        "PhoneNo": updatemobile.text,
+        "EMail": updateemail.text,
+        "Address": updateaddresss.text,
+        "Photo": "",
+        "State": updatestate.text,
+        "Picode": updatepincode.text
+      });
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+      try {
+        if (response.statusCode == 200) {
+          var responseDataa = await response.stream.bytesToString();
+          print("??????");
+          print(responseDataa);
+          print("??????");
+          var Profileinfo = Profilemodel.fromJson(jsonDecode(responseDataa));
+          print(Profileinfo);
+          var profilemessage = Profileinfo.login[index].msg;
+          globaldata.updatemessage = profilemessage.toString();
+          print(Profileinfo.login[index].msg);
+          if(Profileinfo.login[index].error==false){
+            Fluttertoast.showToast(
+                msg: Profileinfo.login[index].msg,
+                gravity: ToastGravity.BOTTOM,
+                toastLength: Toast.LENGTH_LONG,
+                timeInSecForIosWeb: 3,
+                backgroundColor: Color(0xFF184f8d),
+                textColor: Colors.white,
+                fontSize: 16.0);
+            updatename.clear();
+            updatemobile.clear();
+            updateemail.clear();
+            updateaddresss.clear();
+            updatestate.clear();
+            updatepincode.clear();
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
+                Loginscreen(),));
+          }
+          else {
+            Fluttertoast.showToast(
+                msg: Profileinfo.login[index].msg,
+                gravity: ToastGravity.BOTTOM,
+                toastLength: Toast.LENGTH_LONG,
+                timeInSecForIosWeb: 5,
+                backgroundColor: Color(0xFF184f8d),
+                textColor: Colors.white,
+                fontSize: 16.0);
+          }
+          return Profileinfo;
+        }
+        else{
+          Fluttertoast.showToast(
+              msg: globaldata.updatemessage,
+              gravity: ToastGravity.BOTTOM,
+              toastLength: Toast.LENGTH_LONG,
+              timeInSecForIosWeb: 5,
+              backgroundColor: Color(0xFF184f8d),
+              textColor: Colors.white,
+              fontSize: 16.0);
+        }
+      }
+      catch (e){
+        Fluttertoast.showToast(
+            msg: "Invalid UserId & Password!",
+            gravity: ToastGravity.BOTTOM,
+            toastLength: Toast.LENGTH_LONG,
+            timeInSecForIosWeb: 5,
+            backgroundColor: Color(0xFF184f8d),
+            textColor: Colors.white,
+            fontSize: 16.0);
+
+      }
+
+    }
   }
 
 
@@ -223,8 +325,6 @@ class Schedulecontroller extends GetxController{
        var daydata = DayRound.fromJson(jsonDecode(responseData));
        var Nround = daydata.schedule[index].msg;
        globaldata.Totaldaymessage = Nround;
-       var mydaydata = daydata.schedule[index].error;
-       //globaldata.dayerror = mydaydata as String;
       return daydata ;
     }
     else {
@@ -238,6 +338,7 @@ class Schedulecontroller extends GetxController{
           fontSize: 16.0);
 
     }
+    return null;
   }
   /////Night round
  Future<NightRound?> Nightschedule() async {
@@ -274,6 +375,7 @@ class Schedulecontroller extends GetxController{
           fontSize: 16.0);
 
     }
+    return null;
   }
 }
 
@@ -352,6 +454,7 @@ class Completecontroller extends GetxController{
       //     fontSize: 16.0);
 
     }
+    return null;
   }
   /////Night round
   Future<CompleteNightRound?> CompleteNightschedule() async {
@@ -389,6 +492,7 @@ class Completecontroller extends GetxController{
           fontSize: 16.0);
 
     }
+    return null;
   }
 }
 
@@ -431,6 +535,7 @@ class Nextroundcontroller extends GetxController{
       //     textColor: Colors.white,
       //     fontSize: 16.0);
     }
+    return null;
   }
   }
 
@@ -478,6 +583,7 @@ class Lastroundcontroller extends GetxController{
       //     textColor: Colors.white,
       //     fontSize: 16.0);
     }
+    return null;
   }
 }
 
@@ -520,8 +626,10 @@ class Getlocation extends GetxController{
 class Historyroundcontroller extends GetxController{
   var isDataloading = true.obs;
   List<DayHistory> list = [];
- RoundSummary() async {
-
+  DayHistory? rounddata;
+  NightHistory? nightnewdata;
+ RoundSummary(context) async {
+int index=0;
     isDataloading(true);
     var headers = {
       'Content-Type': 'application/json'
@@ -536,6 +644,12 @@ class Historyroundcontroller extends GetxController{
     if(response.statusCode == 200){
       print(responseData);
       var RoundData = DayHistory.fromJson(jsonDecode(responseData));
+      if(RoundData.schedule[index].error==false){
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => shiftthistory()));
+      }
       print("RoundHistory");
       print(RoundData);
       return RoundData;
@@ -854,3 +968,5 @@ class Countercontroller extends GetxController{
 
 
 }
+
+

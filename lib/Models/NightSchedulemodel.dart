@@ -9,11 +9,11 @@ NightRound nightRoundFromJson(String str) => NightRound.fromJson(json.decode(str
 String nightRoundToJson(NightRound data) => json.encode(data.toJson());
 
 class NightRound {
+  List<Schedule> schedule;
+
   NightRound({
     required this.schedule,
   });
-
-  List<Schedule> schedule;
 
   factory NightRound.fromJson(Map<String, dynamic> json) => NightRound(
     schedule: List<Schedule>.from(json["Schedule"].map((x) => Schedule.fromJson(x))),
@@ -25,25 +25,25 @@ class NightRound {
 }
 
 class Schedule {
+  bool error;
+  String msg;
+  dynamic scheduleId;
+  dynamic locationName;
+  dynamic checkPointName;
+  dynamic scheduleTime;
+  dynamic shift;
+  dynamic cTime;
+
   Schedule({
     required this.error,
     required this.msg,
-    required this.scheduleId,
-    required this.locationName,
-    required this.checkPointName,
-    required this.scheduleTime,
-    required this.shift,
+    this.scheduleId,
+    this.locationName,
+    this.checkPointName,
+    this.scheduleTime,
+    this.shift,
     this.cTime,
   });
-
-  bool error;
-  String msg;
-  String scheduleId;
-  String locationName;
-  String checkPointName;
-  String scheduleTime;
-  String shift;
-  dynamic cTime;
 
   factory Schedule.fromJson(Map<String, dynamic> json) => Schedule(
     error: json["error"],

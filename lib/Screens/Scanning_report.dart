@@ -3,19 +3,18 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:guard_patrolling/universaldata.dart';
+import 'package:intl/intl.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import '../Controllers/FetchScan_Report.dart';
 import '../Models/Scandata_model.dart';
 import 'package:http/http.dart' as http;
 
 import '../Models/SendScan_Report.dart';
-import '../universaldata.dart';
-import 'Dashboard.dart';
- 
+
 class Scanningreport extends StatefulWidget {
   Scandata? scandata;
    Scanningreport({Key? key, this.scandata,  }) : super(key: key);
@@ -36,26 +35,42 @@ class _ScanningreportState extends State<Scanningreport> {
   get scannedQrcode => null;
   List selectedItem = [];
   late String _mycheckpint = "";
-  var globalshift;
+  String? newtime;
+  var Comparetime ="";
+  //****Send Scan data API*****////
   Sendreprtdata() async{
+    DateTime now = DateTime.now();
+    String formattedTime = DateFormat.Hm().format(DateTime.now());
+    setState(() {
+      newtime=formattedTime;
+    });
+    print("newfile");
+    print(newtime);
+    print("object");
+    print(newtime);
+    if(newtime==globaldata.sceduletime){
+      Comparetime="1";
+    }else{
+      Comparetime="2";
+    }
+    print("Comparetime");
+    print(Comparetime);
     var request = http.MultipartRequest('POST', Uri.parse('http://103.25.130.254/Helpdesk/Api/Scanreport'));
     request.fields.addAll({
       'reportname': ' ',
       'reportdesc': remarkcontroller.text,
+      "qrid" : globaldata.scanid,
       'gid': globaldata.GID,
-      'Scheduleid': globaldata.Schelduleid,
+      'Scheduleid': widget.scandata!.qrcodeTable.scheduleId,
       'checkid': _mycheckpint,
       'locationid': widget.scandata!.qrcodeTable.locationCode,
       'reportlocation':  widget.scandata!.qrcodeTable.locationName,
       'reportcheckpoint': widget.scandata!.qrcodeTable.checkPoitTable[index].checkPointName,
       'latitude':globaldata.Dlattitude,
       'longitude':globaldata.Dlongitude,
-      'shift': fetchdata.globalshift
+      'shift': fetchdata.globalshift,
+      'status': Comparetime
     });
-    print("&&&&");
-    print(globaldata.Schelduleid);
-    print("&&&&");
-    print(fetchdata.globalshift);
     var file = await http.MultipartFile.fromPath(' ',  imageFile!.path);
     request.files.add(file);
     var response = await request.send();
@@ -91,11 +106,8 @@ class _ScanningreportState extends State<Scanningreport> {
     }
   }
 
-  //****Send Scan data API*****////
   @override
   void initState() {
-   // getCurrentlocation();
-    //obj.Scandetails();
     super.initState();
   }
   @override
@@ -154,7 +166,7 @@ class _ScanningreportState extends State<Scanningreport> {
                     borderRadius: BorderRadius.circular(5.0),
                     border: Border.all(color: Colors.blueAccent)
                 ),
-                padding: EdgeInsets.only(left: 13, right: 13, top: 5),
+                padding: EdgeInsets.only(left: 5, right: 0, top: 5),
                 child: Row(
                   children: [
                     Expanded(
@@ -206,7 +218,7 @@ class _ScanningreportState extends State<Scanningreport> {
                 child: TextFormField(
                   controller: remarkcontroller,
                   minLines: 30,
-                  maxLines: 100,
+                  maxLines: 200,
                   decoration: InputDecoration(
                     hintText: "Type your text here.........",
                     hintStyle: TextStyle(color: Colors.black),
@@ -309,11 +321,12 @@ class _ScanningreportState extends State<Scanningreport> {
                           Sendreprtdata();
                               setState(() {
                                 widget.scandata!.qrcodeTable.locationName = "";
-                                // remarkcontroller.clear();
-                                // passcontroller.clear();
+                                remarkcontroller.clear();
+                                passcontroller.clear();
                                 _mycheckpint = "";
                                 imageFile = null;
                               });
+                              Mail();
                         }
                         },
                     child: Text("Submit Report",style: TextStyle(color: Colors.white,fontSize: 18.0),)),
@@ -324,7 +337,36 @@ class _ScanningreportState extends State<Scanningreport> {
       ),
     );
   }
+///Mailing function//****
+  Mail() async {
+    print("mail");
+    String username = "auto.invoice@gateway-distriparks.com";
+    String password = "FD!@#shjds123JH";
 
+    final smtpServer = gmail(username, password);
+    // Creating the Gmail server
+
+    // Create our email message.
+    final message = Message()
+      ..from = Address(username)
+      ..recipients.add('gunjanrana918@gmail.com') //recipent email
+      ..ccRecipients.addAll(['yourCCmails@example.com', 'yourCCmails@example.com']) //cc Recipents emails
+      ..bccRecipients.add(Address('test@test.com')) //bcc Recipents emails
+      ..subject = 'Patrolling Report Data' //subject of the email
+      ..attachments.add(FileAttachment(imageFile!))
+      ..html="<p>Location : ${widget.scandata!.qrcodeTable.locationName}</p>\n <p>Checkpoint : ${widget.scandata!.qrcodeTable.checkPoitTable[index].checkPointName}</p>\n <p>"
+          "Shift : ${fetchdata.globalshift}</p>\n<p>status : ${Comparetime}</p>\n<p>Guard Name : ${globaldata.Name}"
+          "</p>\n<p>Observation Report : ${remarkcontroller.text}</p> "
+    ..attachments.add(FileAttachment(imageFile!)); //body of the email
+
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Message sent: ' + sendReport.toString()); //print if the email is sent
+    } on MailerException catch (e) {
+      print('Message not sent. \n'+ e.toString()); //print if the email is not sent
+      // e.toString() will show why the email is not sending
+    }
+  }
   Future<void> openCamera() async {
     final pickedFile = await picker.pickImage(source: ImageSource.camera,imageQuality: 25);
     setState((){

@@ -1,18 +1,9 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 // ignore: implementation_imports
-import 'package:flutter/src/widgets/binding.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:guard_patrolling/Screens/login.dart';
-import 'package:guard_patrolling/Screens/verifyOTP_screen.dart';
-import 'package:guard_patrolling/universaldata.dart';
-import 'package:http/http.dart' as http;
 import '../Controllers/Login_controller.dart';
-import '../Models/Forgotpassword.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -20,7 +11,7 @@ void main() {
     theme: ThemeData(
       primaryColor: Colors.red,
       // ignore: deprecated_member_use
-      accentColor: Colors.deepOrange,
+      hintColor: Colors.deepOrange,
     ),
     home: OTPchangepassword(),
   ));

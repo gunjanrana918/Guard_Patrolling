@@ -21,8 +21,9 @@ class _NextroundState extends State<Nextround> {
         child: ListView.builder(
             itemCount: widget.nextdata!.schedule.length,
             itemBuilder: (BuildContext context, int index){
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
+              return widget.nextdata!.schedule[index].error==false?
+                Padding(
+                padding: const EdgeInsets.all(10.0),
                 child: SizedBox(
                   height: 110,
                   child: Card(
@@ -35,21 +36,6 @@ class _NextroundState extends State<Nextround> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //   children: [
-                        //     Padding(
-                        //       padding: EdgeInsets.only(left: 8.0),
-                        //       child: Expanded(
-                        //         child: Text("Checkpoint Name",style: TextStyle(color: Colors.black,fontSize: 16.0, fontWeight: FontWeight.bold ),),
-                        //       ),
-                        //     ),
-                        //     Expanded(
-                        //       child: Text(widget.nextdata!.schedule[index].checkPointName
-                        //         ,style: TextStyle(color: Color(0xFF184f8d),fontSize: 16.0,  ),),
-                        //     )
-                        //   ],
-                        // ),
                         Padding(padding: EdgeInsets.only(top: 0.0)),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,6 +81,12 @@ class _NextroundState extends State<Nextround> {
                     ),
                   ),
                 ),
+              ):
+              Container(
+                child: Center(child: Padding(
+                  padding: const EdgeInsets.only(top: 18.0),
+                  child: Text(widget.nextdata!.schedule[index].msg.toString(),style: TextStyle(fontSize: 17.0),),
+                )),
               );
             }),
       ),

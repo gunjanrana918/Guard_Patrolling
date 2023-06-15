@@ -1,23 +1,17 @@
 import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:guard_patrolling/Controllers/Login_controller.dart';
 import 'package:guard_patrolling/Models/Login_models.dart';
 import 'package:guard_patrolling/Screens/Dashboard.dart';
-import 'package:guard_patrolling/Screens/Change_password.dart';
 import 'package:guard_patrolling/Screens/MobileOTP_screen.dart';
 import 'package:guard_patrolling/universaldata.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../Models/Counter_ON_DELAY_MISSED.dart';
-import '../Models/LastRoundmodel.dart';
-import '../Models/NextRound.dart';
-import '../Models/Schedule.dart';
-import '../Models/Total_CompleteCount.dart';
-import 'package:http/http.dart' as http;
+
+import '../Models/Incident_History.dart';
 
 void main(){
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,14 +39,10 @@ class _LoginscreenState extends State<Loginscreen> {
   late SharedPreferences? logindata = null;
   bool? newuser;
   Userdata? fromdata ;
-  NextRound? nextdata;
-  TotalRound? totalcount;
-  LastRound? lastdata;
-  CompleteTotalCount? comptotalcount;
-  CountTimeData? counteralldata;
   late SharedPreferences sharedPreferences;
   get index => null;
   var Generateotp;
+
 
   Future<void> main() async{
     SharedPreferences prefs =await SharedPreferences.getInstance();
@@ -63,6 +53,8 @@ class _LoginscreenState extends State<Loginscreen> {
     globaldata.PhoneNo = prefs.getString('Mobile').toString();
     globaldata.EMail = prefs.getString('Email').toString();
     globaldata.Address = prefs.getString('Address').toString();
+    globaldata.State = prefs.getString('State').toString();
+    globaldata.Picode = prefs.getString('Picode').toString();
     if ( globaldata.GID.isNotEmpty){
       Future.delayed(Duration(seconds: 5), (){
         print("Executed after 5 seconds");
@@ -202,11 +194,6 @@ class _LoginscreenState extends State<Loginscreen> {
                         }
                         else  {
                             fromdata = await obj.loginbutton(context);
-                            // await Future.delayed(const Duration(seconds: 100));
-                            // obj.mobileCont.clear();
-                            // obj.passCont.clear();
-                            //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
-                            //       Dashboardscreen(),));
                         }
                       }),
                 ) ,

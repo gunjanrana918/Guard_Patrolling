@@ -9,11 +9,11 @@ IncidentReport incidentReportFromJson(String str) => IncidentReport.fromJson(jso
 String incidentReportToJson(IncidentReport data) => json.encode(data.toJson());
 
 class IncidentReport {
+  List<IncidentTable> incidentTable;
+
   IncidentReport({
     required this.incidentTable,
   });
-
-  List<IncidentTable> incidentTable;
 
   factory IncidentReport.fromJson(Map<String, dynamic> json) => IncidentReport(
     incidentTable: List<IncidentTable>.from(json["IncidentTable"].map((x) => IncidentTable.fromJson(x))),
@@ -25,13 +25,13 @@ class IncidentReport {
 }
 
 class IncidentTable {
+  bool error;
+  String msg;
+
   IncidentTable({
     required this.error,
     required this.msg,
   });
-
-  bool error;
-  String msg;
 
   factory IncidentTable.fromJson(Map<String, dynamic> json) => IncidentTable(
     error: json["error"],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:guard_patrolling/Models/OnTime_round.dart';
 
 class Ontimerounddata extends StatefulWidget {
@@ -25,7 +24,7 @@ class _OntimerounddataState extends State<Ontimerounddata> {
             itemBuilder: (BuildContext context, int index){
                 return widget.ontimedata!.schedule[index].error==false?
                   Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: SizedBox(
                     height: 130,
                     child: Card(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../Models/Missedtime_data.dart';
 
@@ -28,9 +27,9 @@ class _MissedrounddataState extends State<Missedrounddata> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: SizedBox(
-                    height: 140,
+                    height: 120,
                     child: Card(
-                      margin: EdgeInsets.all(10.0),
+                      margin: EdgeInsets.all(3.0),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
                           side: BorderSide(color: Color(0xFF184f8d))),
                       shadowColor: Color(0xFF184f8d),

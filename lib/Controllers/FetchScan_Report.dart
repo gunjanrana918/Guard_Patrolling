@@ -7,7 +7,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:guard_patrolling/universaldata.dart';
-
 import '../Models/Scandata_model.dart';
 
 class Fetchscanreport extends GetxController{
@@ -17,9 +16,6 @@ class Fetchscanreport extends GetxController{
   String longitudedata = "";
 String? ScanMessage;
   var globalshift;
-
-
-
   getCurrentlocation() async {
     final geoposition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
@@ -31,8 +27,7 @@ String? ScanMessage;
       print(longitudedata);
 
   }
-
-   Scandetails() async {
+  Scandetails() async {
     isDataloading(true);
     var headers = {
       'Content-Type': 'application/json'
@@ -56,8 +51,10 @@ String? ScanMessage;
         globaldata.Scanmessage = scaninfo.qrcodeTable.msg;
         globaldata.Schelduleid = scaninfo.qrcodeTable.scheduleId;
         globaldata.Scheduleshift = scaninfo.qrcodeTable.shift;
+        globaldata.sceduletime = scaninfo.qrcodeTable.scheduleTime;
         print(globaldata.Schelduleid);
         print(globaldata.Scheduleshift);
+        print(globaldata.sceduletime);
         if(globaldata.Scheduleshift=='DAY'){
           globalshift="1";
         }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:guard_patrolling/Models/Complete%20Day%20Round.dart';
 
 import '../Models/Complete Night Round.dart';
@@ -41,11 +40,11 @@ class _CompleteroundState extends State<Completeround> {
                     itemBuilder: (BuildContext context, int index){
                        return widget.CDAYROUND!.schedule[index].error==false?
                          Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: SizedBox(
                             height: 160,
                             child: Card(
-                              margin: EdgeInsets.all(10.0),
+                              margin: EdgeInsets.all(3.0),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
                                   side: BorderSide(color: Color(0xFF184f8d))),
                               shadowColor: Color(0xFF184f8d),
@@ -115,7 +114,12 @@ class _CompleteroundState extends State<Completeround> {
                               ),
                             ),
                           ),
-                        ):Container();
+                        ):Container(
+                         child: Center(child: Padding(
+                           padding: const EdgeInsets.only(top: 18.0),
+                           child: Text(widget.CDAYROUND!.schedule[index].msg,style: TextStyle(fontSize: 17.0),),
+                         )),
+                       );
                     }),
                 // Text("hello"),
                 ListView.builder(
@@ -124,11 +128,11 @@ class _CompleteroundState extends State<Completeround> {
                         return
                           widget.CNIGHTROUND?.schedule[index].error==false?
                           Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: SizedBox(
                             height: 130,
                             child: Card(
-                              margin: EdgeInsets.all(10.0),
+                              margin: EdgeInsets.all(3.0),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
                                   side: BorderSide(color: Color(0xFF184f8d))),
                               shadowColor: Color(0xFF184f8d),

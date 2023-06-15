@@ -9,11 +9,11 @@ SendQrReport sendQrReportFromJson(String str) => SendQrReport.fromJson(json.deco
 String sendQrReportToJson(SendQrReport data) => json.encode(data.toJson());
 
 class SendQrReport {
+  List<ScanreportTable> scanreportTable;
+
   SendQrReport({
     required this.scanreportTable,
   });
-
-  List<ScanreportTable> scanreportTable;
 
   factory SendQrReport.fromJson(Map<String, dynamic> json) => SendQrReport(
     scanreportTable: List<ScanreportTable>.from(json["ScanreportTable"].map((x) => ScanreportTable.fromJson(x))),
@@ -25,13 +25,13 @@ class SendQrReport {
 }
 
 class ScanreportTable {
+  bool error;
+  String msg;
+
   ScanreportTable({
     required this.error,
     required this.msg,
   });
-
-  bool error;
-  String msg;
 
   factory ScanreportTable.fromJson(Map<String, dynamic> json) => ScanreportTable(
     error: json["error"],

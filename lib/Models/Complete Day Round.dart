@@ -9,11 +9,11 @@ CompleteDayRound completeDayRoundFromJson(String str) => CompleteDayRound.fromJs
 String completeDayRoundToJson(CompleteDayRound data) => json.encode(data.toJson());
 
 class CompleteDayRound {
+  List<Schedule> schedule;
+
   CompleteDayRound({
     required this.schedule,
   });
-
-  List<Schedule> schedule;
 
   factory CompleteDayRound.fromJson(Map<String, dynamic> json) => CompleteDayRound(
     schedule: List<Schedule>.from(json["Schedule"].map((x) => Schedule.fromJson(x))),
@@ -25,25 +25,25 @@ class CompleteDayRound {
 }
 
 class Schedule {
+  bool error;
+  String msg;
+  dynamic scheduleId;
+  dynamic locationName;
+  dynamic checkPointName;
+  dynamic scheduleTime;
+  dynamic shift;
+  dynamic cTime;
+
   Schedule({
     required this.error,
     required this.msg,
-    required this.scheduleId,
-    required this.locationName,
-    required this.checkPointName,
-    required this.scheduleTime,
-    required this.shift,
-    required this.cTime,
+    this.scheduleId,
+    this.locationName,
+    this.checkPointName,
+    this.scheduleTime,
+    this.shift,
+    this.cTime,
   });
-
-  bool error;
-  String msg;
-  String scheduleId;
-  String locationName;
-  String checkPointName;
-  String scheduleTime;
-  String shift;
-  String cTime;
 
   factory Schedule.fromJson(Map<String, dynamic> json) => Schedule(
     error: json["error"],

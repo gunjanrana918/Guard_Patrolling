@@ -1,16 +1,12 @@
 
-import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:guard_patrolling/Controllers/FetchScan_Report.dart';
-import 'package:guard_patrolling/Controllers/Get_Location.dart';
 import 'package:guard_patrolling/Controllers/Login_controller.dart';
 import 'package:guard_patrolling/Models/Complete%20Day%20Round.dart';
 import 'package:guard_patrolling/Models/Complete%20Night%20Round.dart';
@@ -21,9 +17,9 @@ import 'package:guard_patrolling/Models/Missedtime_data.dart';
 import 'package:guard_patrolling/Models/NextRound.dart';
 import 'package:guard_patrolling/Models/NightSchedulemodel.dart';
 import 'package:guard_patrolling/RoundHistory/Missedround_details.dart';
-import 'package:guard_patrolling/Screens/Aboutspage.dart';
 import 'package:guard_patrolling/Screens/Change_password.dart';
 import 'package:guard_patrolling/Screens/HistoryTab.dart';
+import 'package:guard_patrolling/Screens/Incident_search.dart';
 import 'package:guard_patrolling/Screens/Profile_menu.dart';
 import 'package:guard_patrolling/Screens/Scanning_report.dart';
 import 'package:guard_patrolling/universaldata.dart';
@@ -40,9 +36,8 @@ import '../Models/Schedule.dart';
 import '../Models/Total_CompleteCount.dart';
 import '../RoundHistory/Complete_round.dart';
 import '../RoundHistory/DelayTime_Rounddetails.dart';
-import '../RoundHistory/Last_round.dart';
-import '../RoundHistory/Ontime_round_details.dart';
 import '../RoundHistory/Next_round.dart';
+import '../RoundHistory/Ontime_round_details.dart';
 import 'Incident_screen.dart';
 import '../RoundHistory/Today_round.dart';
 import 'login.dart';
@@ -226,21 +221,23 @@ class _DashboardscreenState extends State<Dashboardscreen> {
   Future<bool> _onWillPop() async {
     return (await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Are you sure?'),
-        content: Text('Do you want to exit an App'),
-        actions: <Widget>[
-          // ignore: deprecated_member_use
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text('No'),
-          ),
-          // ignore: deprecated_member_use
-          ElevatedButton(
-            onPressed: () => exit(0),
-            child: const Text('Yes'),
-          ),
-        ],
+      builder: (context) => Container(
+        height: 100,
+        child: AlertDialog(
+          title: Text('Do you want to exit?'),
+          actions: <Widget>[
+            // ignore: deprecated_member_use
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('No'),
+            ),
+            // ignore: deprecated_member_use
+            ElevatedButton(
+              onPressed: () => exit(0),
+              child: const Text('Yes'),
+            ),
+          ],
+        ),
       ),
     )) ??
         false;
@@ -288,30 +285,11 @@ class _DashboardscreenState extends State<Dashboardscreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("%%%%%%%");
-    print(todayroundvalue);
     return WillPopScope(onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
           title: Text(globaldata.Name),
           backgroundColor: const Color(0xFF184f8d),
-          actions: [
-            InkWell(
-              child: Image.asset(
-                "images/exitnew.png",
-                height: 30,
-                width: 30,
-              ),
-              onTap: () async {
-                SharedPreferences preferences =
-                    await SharedPreferences.getInstance();
-                await preferences.clear();
-                Navigator.of(context).pop();
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Loginscreen()));
-              },
-            )
-          ],
         ),
         drawer: Drawer(
           child: ListView(
@@ -357,63 +335,19 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 child: ListTile(
                     dense: true,
                     leading: const Icon(
-                      Icons.lock_outline_rounded,
-                      color: Color(0xFF447cf4),
-                    ),
-                    title: const Text(
-                      'Change Password',
-                      style: TextStyle(fontSize: 15.0),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => changepassword()));
-                    }),
-              ),
-              Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                    side: BorderSide(color: Colors.black)),
-                elevation: 4.0,
-                child: ListTile(
-                    dense: true,
-                    leading: Image.asset(
-                      "images/aboutus.png",
-                      height: 25,
-                    ),
-                    title: const Text(
-                      'About Us',
-                      style: TextStyle(fontSize: 15.0),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Aboutus()));
-                    }),
-              ),
-              Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                    side: BorderSide(color: Colors.black)),
-                child: ListTile(
-                    dense: true,
-                    leading: const Icon(
-                      Icons.contact_support_sharp,
+                      Icons.history_rounded,
                       size: 30.0,
-                      color: Color(0xFF447cf4),
+                      color: Colors.blueAccent,
                     ),
                     title: const Text(
-                      'Contact Us',
+                      'History',
                       style: TextStyle(fontSize: 15.0),
                     ),
-                    onTap: () {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => resetpassword()));
+                    onTap: () async{
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => shiftthistory()));
                     }),
               ),
               Card(
@@ -429,16 +363,14 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                       color: Colors.blueAccent,
                     ),
                     title: const Text(
-                      'History',
+                      'Incident History',
                       style: TextStyle(fontSize: 15.0),
                     ),
                     onTap: () async{
-                      rounddata = await object.RoundSummary();
-                     nightnewdata = await nightvalue.NightSummary();
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => shiftthistory(rounddata:rounddata,nightnewdata:nightnewdata)));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => incidentsearch()));
                     }),
               ),
               Card(
@@ -459,6 +391,76 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                     onTap: () {
                       // Navigator.push(context,
                       //     MaterialPageRoute(builder: (context) => winhistory()));
+                    }),
+              ),
+              Card(
+                elevation: 4.0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    side: BorderSide(color: Colors.black)),
+                child: ListTile(
+                    dense: true,
+                    leading: const Icon(
+                      Icons.lock_outline_rounded,
+                      color: Color(0xFF447cf4),
+                    ),
+                    title: const Text(
+                      'Change Password',
+                      style: TextStyle(fontSize: 15.0),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => changepassword()));
+                    }),
+              ),
+              Card(
+                elevation: 4.0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    side: BorderSide(color: Colors.black)),
+                child: ListTile(
+                    dense: true,
+                    leading: const Icon(
+                      Icons.contact_support_sharp,
+                      size: 30.0,
+                      color: Color(0xFF447cf4),
+                    ),
+                    title: const Text(
+                      'Contact Security Incharge',
+                      style: TextStyle(fontSize: 15.0),
+                    ),
+                    onTap: () {
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => resetpassword()));
+                    }),
+              ),
+              Card(
+                elevation: 4.0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    side: BorderSide(color: Colors.black)),
+                child: ListTile(
+                    dense: true,
+                    leading: const Icon(
+                      Icons.logout,
+                      size: 30.0,
+                      color: Color(0xFF447cf4),
+                    ),
+                    title: const Text(
+                      'Logout',
+                      style: TextStyle(fontSize: 15.0),
+                    ),
+                    onTap: () async{
+                      SharedPreferences preferences =
+                          await SharedPreferences.getInstance();
+                      await preferences.clear();
+                      Navigator.of(context).pop();
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Loginscreen()));
                     }),
               ),
 
@@ -521,6 +523,36 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                                 builder: (context) => Completeround(CDAYROUND:CDAYROUND,CNIGHTROUND:CNIGHTROUND)));},
                             title: Text(
                               "Complete Round",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, color: Colors.black),
+                            ),
+                            trailing: Text(completeroundvalue,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black)),
+                          ),
+                        ),
+                        Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              side: BorderSide(color: Colors.blueAccent)),
+                          elevation: 4.0,
+                          child: ListTile(
+                            onTap: () async {
+                              nextdata = await Nextdata.Nextroundschedule();
+                              Fluttertoast.showToast(
+                                  msg: Nextdata.nextmessage,
+                                  gravity: ToastGravity.BOTTOM,
+                                  toastLength: Toast.LENGTH_LONG,
+                                  timeInSecForIosWeb: 5,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => Nextround(nextdata:nextdata)));
+                              },
+                            title: Text(
+                              "Upcoming Round",
                               style: TextStyle(
                                   fontWeight: FontWeight.w500, color: Colors.black),
                             ),
@@ -665,17 +697,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                           Divider(thickness: 1,),
                           ListTile(
                             onTap: () async{
-                               nextdata = await Nextdata.Nextroundschedule();
-                              // Fluttertoast.showToast(
-                              //     msg: Nextdata.nextmessage,
-                              //     gravity: ToastGravity.BOTTOM,
-                              //     toastLength: Toast.LENGTH_LONG,
-                              //     timeInSecForIosWeb: 5,
-                              //     backgroundColor: Colors.red,
-                              //     textColor: Colors.white,
-                              //     fontSize: 16.0);
-                              // Navigator.push(context, MaterialPageRoute(
-                              //     builder: (context) => Nextround(nextdata:nextdata)));
+                               //nextdata = await Nextdata.Nextroundschedule();
                             },
                             title: const Text(
                               "Next Round",

@@ -1,7 +1,5 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../Controllers/Login_controller.dart';
 import 'Makenew_password.dart';
