@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:guard_patrolling/universaldata.dart';
@@ -14,6 +15,8 @@ import '../Models/Scandata_model.dart';
 import 'package:http/http.dart' as http;
 
 import '../Models/SendScan_Report.dart';
+import 'Admin_dashboard.dart';
+import 'Dashboard.dart';
 
 class Scanningreport extends StatefulWidget {
   Scandata? scandata;
@@ -24,20 +27,42 @@ class Scanningreport extends StatefulWidget {
 }
 int index = 0;
 class _ScanningreportState extends State<Scanningreport> {
-
   var newmessage;
   final Fetchscanreport fetchdata = Get.put(Fetchscanreport());
   TextEditingController remarkcontroller = new TextEditingController();
   TextEditingController passcontroller = new TextEditingController();
   File? imageFile;
   final picker = ImagePicker();
-  String? selectedvalue;
   get scannedQrcode => null;
-  List selectedItem = [];
+  List _selecteCategorys = [];
+  List Unselectitem=[];
+  List  refrshlist=[];
   late String _mycheckpint = "";
+  var newdata;
+
   String? newtime;
   var Comparetime ="";
+  String latitudedata = "";
+  String longitudedata = "";
+  getCurrentlocation() async {
+    final geoposition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      latitudedata = '${geoposition.latitude}';
+      print("latitudedata");
+      print(latitudedata);
+      globaldata.Dlattitude = latitudedata.toString();
+      longitudedata = '${geoposition.longitude}';
+      print("longitude");
+      print(longitudedata);
+      globaldata.Dlongitude = longitudedata.toString();
+    });
+    print("Global");
+    print(globaldata.Dlattitude);
+
+  }
   //****Send Scan data API*****////
+
   Sendreprtdata() async{
     DateTime now = DateTime.now();
     String formattedTime = DateFormat.Hm().format(DateTime.now());
@@ -50,7 +75,8 @@ class _ScanningreportState extends State<Scanningreport> {
     print(newtime);
     if(newtime==globaldata.sceduletime){
       Comparetime="1";
-    }else{
+    }
+    else{
       Comparetime="2";
     }
     print("Comparetime");
@@ -65,9 +91,10 @@ class _ScanningreportState extends State<Scanningreport> {
       'checkid': _mycheckpint,
       'locationid': widget.scandata!.qrcodeTable.locationCode,
       'reportlocation':  widget.scandata!.qrcodeTable.locationName,
-      'reportcheckpoint': widget.scandata!.qrcodeTable.checkPoitTable[index].checkPointName,
-      'latitude':globaldata.Dlattitude,
-      'longitude':globaldata.Dlongitude,
+       'reportcheckpoint': _selecteCategorys.toString(),
+      // 'Uncheckpoint':Unselectitem.toString(),
+      'latitude':latitudedata,
+      'longitude':longitudedata,
       'shift': fetchdata.globalshift,
       'status': Comparetime
     });
@@ -93,6 +120,13 @@ class _ScanningreportState extends State<Scanningreport> {
           backgroundColor: Color(0xFF184f8d),
           textColor: Colors.white,
           fontSize: 16.0);
+      if(globaldata.usertype=='1'){
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
+            Dashboardscreen(),));
+      } else{
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
+            admindashboard(),));
+      }
     }
     else{
       Fluttertoast.showToast(
@@ -105,9 +139,9 @@ class _ScanningreportState extends State<Scanningreport> {
           fontSize: 16.0);
     }
   }
-
   @override
   void initState() {
+     getCurrentlocation();
     super.initState();
   }
   @override
@@ -117,8 +151,7 @@ class _ScanningreportState extends State<Scanningreport> {
         title: Text("Guard Patrolling Report"),
         backgroundColor: Color(0xFF184f8d),
       ),
-      body:
-      SingleChildScrollView(
+      body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           children: [
@@ -128,7 +161,7 @@ class _ScanningreportState extends State<Scanningreport> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 10.0),),
-            Text("Checkpoint",style: TextStyle(fontSize: 17.0,color: Colors.black,fontWeight: FontWeight.bold),
+            Text("Location",style: TextStyle(fontSize: 17.0,color: Colors.black,fontWeight: FontWeight.bold),
               ),
             ],
           ),),
@@ -161,7 +194,7 @@ class _ScanningreportState extends State<Scanningreport> {
             Padding(
               padding: const EdgeInsets.all(7),
               child: Container(
-                width: 412,
+                width: 400,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
                     border: Border.all(color: Colors.blueAccent)
@@ -182,12 +215,10 @@ class _ScanningreportState extends State<Scanningreport> {
                               color: Colors.black,
                               fontSize: 16,
                             ),
-                            hint: Text('Select Checkpoint',style: TextStyle(color: Colors.black)),
+                            hint: Text('Select Parameter',style: TextStyle(color: Colors.black)),
                             onChanged: ( newValue) {
                               setState(() {
                                 _mycheckpint = newValue!;
-                                print("??????????/");
-                                print(_mycheckpint);
                               });
                             },
                             items: widget.scandata!.qrcodeTable.checkPoitTable.map((item) {
@@ -203,6 +234,23 @@ class _ScanningreportState extends State<Scanningreport> {
                   ],
                 ),
               ),
+            ),
+            //Padding(padding: EdgeInsets.only(top: 10.0)),
+            Container(
+              height: 230,
+              child: ListView.builder(
+                itemCount: widget.scandata!.qrcodeTable.checkPoitTable.length,
+                  itemBuilder: (BuildContext context, int index){
+                  return CheckboxListTile(
+                      title: Text(widget.scandata!.qrcodeTable.checkPoitTable[index].checkPointName),
+                      value: _selecteCategorys.contains(widget.scandata!.qrcodeTable.checkPoitTable[index].checkPointName,)??false,
+                      onChanged: (bool? selected){
+                        _onCategorySelected(selected!, widget.scandata!.qrcodeTable.checkPoitTable[index].checkPointName,
+                        );
+                      });
+                  }
+                  ),
+
             ),
             Padding(padding: EdgeInsets.all(5.0),
               child:
@@ -319,6 +367,7 @@ class _ScanningreportState extends State<Scanningreport> {
                         }
                         else {
                           Sendreprtdata();
+                          Mail();
                               setState(() {
                                 widget.scandata!.qrcodeTable.locationName = "";
                                 remarkcontroller.clear();
@@ -326,7 +375,6 @@ class _ScanningreportState extends State<Scanningreport> {
                                 _mycheckpint = "";
                                 imageFile = null;
                               });
-                              Mail();
                         }
                         },
                     child: Text("Submit Report",style: TextStyle(color: Colors.white,fontSize: 18.0),)),
@@ -337,26 +385,38 @@ class _ScanningreportState extends State<Scanningreport> {
       ),
     );
   }
+
+  void _onCategorySelected(bool selected, category_name,) {
+    if (selected == true) {
+      setState(() {
+        _selecteCategorys.add(category_name);
+        print(_selecteCategorys);
+      });
+
+
+    }
+    else {
+      setState(() {
+       _selecteCategorys.remove(category_name);
+      });
+    }
+
+  }
 ///Mailing function//****
   Mail() async {
     print("mail");
     String username = "auto.invoice@gateway-distriparks.com";
     String password = "FD!@#shjds123JH";
-
     final smtpServer = gmail(username, password);
-    // Creating the Gmail server
-
-    // Create our email message.
     final message = Message()
       ..from = Address(username)
-      ..recipients.add('gunjanrana918@gmail.com') //recipent email
-      ..ccRecipients.addAll(['yourCCmails@example.com', 'yourCCmails@example.com']) //cc Recipents emails
+      ..recipients.add('vivek.shirke@gatewaydistriparks.com') //recipent email
+      ..ccRecipients.addAll(['vikrant.dayala@gatewaydistriparks.com','gunjan.rana@gatewaydistriparks.com']) //cc Recipents emails
       ..bccRecipients.add(Address('test@test.com')) //bcc Recipents emails
       ..subject = 'Patrolling Report Data' //subject of the email
       ..attachments.add(FileAttachment(imageFile!))
-      ..html="<p>Location : ${widget.scandata!.qrcodeTable.locationName}</p>\n <p>Checkpoint : ${widget.scandata!.qrcodeTable.checkPoitTable[index].checkPointName}</p>\n <p>"
-          "Shift : ${fetchdata.globalshift}</p>\n<p>status : ${Comparetime}</p>\n<p>Guard Name : ${globaldata.Name}"
-          "</p>\n<p>Observation Report : ${remarkcontroller.text}</p> "
+      ..html="<p>Guard Name : ${globaldata.Name}\n</p><p>Location : ${widget.scandata!.qrcodeTable.locationName}</p>\n <p>Checkpoint : ${widget.scandata!.qrcodeTable.checkPoitTable[index].checkPointName}</p>\n <p>"
+          "Shift : ${fetchdata.globalshift}</p>\n<p>status : ${Comparetime}</p>\n<p>Observation Report : ${remarkcontroller.text}</p> "
     ..attachments.add(FileAttachment(imageFile!)); //body of the email
 
     try {

@@ -8,6 +8,7 @@ import 'package:guard_patrolling/Models/Get_locationmodel.dart';
 import 'package:guard_patrolling/Models/Login_models.dart';
 import 'package:guard_patrolling/Models/NightSchedulemodel.dart';
 import 'package:guard_patrolling/Models/OnTime_round.dart';
+import 'package:guard_patrolling/Screens/Admin_dashboard.dart';
 import 'package:guard_patrolling/Screens/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -28,7 +29,7 @@ import '../Models/Schedule.dart';
 import '../Models/Total_CompleteCount.dart';
 import '../RoundHistory/Guard_Historydetails.dart';
 import '../Screens/Dashboard.dart';
-import '../Screens/HistoryTab.dart';
+import '../Screens/Guard_HistorySearch.dart';
 import '../Screens/verifyOTP_screen.dart';
 
 
@@ -84,6 +85,7 @@ class Logincontroller extends GetxController {
           sharedPreferences.setString('Picode',Userinfo.login[index].picode);
           sharedPreferences.setString('GID',Userinfo.login[index].gid);
           sharedPreferences.setString('LoginID',Userinfo.login[index].loginId);
+          sharedPreferences.setString('UserType',Userinfo.login[index].userType);
           var loginid = sharedPreferences.getString("LoginID");
           // logmessage = sharedPreferences.getString("msg")!;
           // globaldata.LoginMessage = logmessage;
@@ -91,6 +93,8 @@ class Logincontroller extends GetxController {
           globaldata.LoginID = loginid!;
           print("LOGINID");
           print(globaldata.LoginID);
+          var usertype = sharedPreferences.get("UserType");
+          globaldata.usertype= usertype.toString();
           var name = sharedPreferences.getString('Name');
           globaldata.Name = name.toString();
           var email = sharedPreferences.getString('Email');
@@ -114,10 +118,16 @@ class Logincontroller extends GetxController {
               backgroundColor: Color(0xFF184f8d),
               textColor: Colors.white,
               fontSize: 16.0);
-          // mobileCont.clear();
-          // passCont.clear();
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
-              Dashboardscreen(),));
+          if(Userinfo.login[index].userType=="1"){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
+                Dashboardscreen(),));
+          }
+          else {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
+                admindashboard(),));
+          }
+
+
 
         }
         else {

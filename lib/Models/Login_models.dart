@@ -38,6 +38,10 @@ class Login {
   String sName;
   String state;
   String picode;
+  String reportingMgrName;
+  String reportingMgrContact;
+  String reportingMgrEmail;
+  String userType;
 
   Login({
     required this.error,
@@ -53,6 +57,10 @@ class Login {
     required this.sName,
     required this.state,
     required this.picode,
+    required this.reportingMgrName,
+    required this.reportingMgrContact,
+    required this.reportingMgrEmail,
+    required this.userType,
   });
 
   factory Login.fromJson(Map<String, dynamic> json) => Login(
@@ -69,6 +77,10 @@ class Login {
     sName: json["SName"],
     state: json["State"],
     picode: json["Picode"],
+    reportingMgrName: json["ReportingMgrName"],
+    reportingMgrContact: json["ReportingMgrContact"],
+    reportingMgrEmail: json["ReportingMgrEmail"],
+    userType: json["UserType"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -85,5 +97,9 @@ class Login {
     "SName": sName,
     "State": state,
     "Picode": picode,
+    "ReportingMgrName": reportingMgrName,
+    "ReportingMgrContact": reportingMgrContact,
+    "ReportingMgrEmail": reportingMgrEmail,
+    "UserType": userType,
   };
 }

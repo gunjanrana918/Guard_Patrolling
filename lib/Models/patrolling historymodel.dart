@@ -37,6 +37,9 @@ class Schedule {
   String completeTime;
   String reportdate;
   String status;
+  String reportDescription;
+  String photoUrl;
+  String name;
 
   Schedule({
     required this.error,
@@ -51,6 +54,9 @@ class Schedule {
     required this.completeTime,
     required this.reportdate,
     required this.status,
+    required this.reportDescription,
+    required this.photoUrl,
+    required this.name,
   });
 
   factory Schedule.fromJson(Map<String, dynamic> json) => Schedule(
@@ -66,6 +72,9 @@ class Schedule {
     completeTime: json["CompleteTime"],
     reportdate: json["Reportdate"],
     status: json["status"],
+    reportDescription: json["ReportDescription"],
+    photoUrl: json["PhotoUrl"],
+    name: json["Name"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -81,5 +90,8 @@ class Schedule {
     "CompleteTime": completeTime,
     "Reportdate": reportdate,
     "status": status,
+    "ReportDescription": reportDescription,
+    "PhotoUrl": photoUrl,
+    "Name": name,
   };
 }

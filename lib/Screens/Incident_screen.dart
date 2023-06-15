@@ -14,40 +14,42 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import '../Controllers/Login_controller.dart';
 import '../Models/IncidentModel.dart';
+import '../Models/Incident_History.dart';
+import 'Admin_dashboard.dart';
+import 'Dashboard.dart';
 
 class Incidentrecord extends StatefulWidget {
-  Incidentrecord({
-    Key? key,
-  }) : super(key: key);
+  IncidentHistory? incidentdata;
+  Incidentrecord({Key? key,this.incidentdata}) : super(key: key);
 
   @override
   State<Incidentrecord> createState() => _IncidentrecordState();
 }
-
+int index = 0;
 class _IncidentrecordState extends State<Incidentrecord> {
   TextEditingController titlecontroller = new TextEditingController();
   TextEditingController descriptioncontroller = new TextEditingController();
   final Getlocation obj = Get.put(Getlocation());
-  int index = 0;
+
   File? imageFile;
   String latitudedata = "";
   String longitudedata = "";
   List<IncidentReport> list = [];
   final picker = ImagePicker();
   var message;
-  var Comparetime;
   DateTime now = DateTime.now();
   String formattedTime = DateFormat.Hms().format(DateTime.now());
 
   NewfileUpload() async {
+    getCurrentlocation();
     var request = http.MultipartRequest(
         'POST', Uri.parse('http://103.25.130.254/Helpdesk/Api/Incident'));
     request.fields.addAll({
       'sublocation': titlecontroller.text,
       'incidentdetails': descriptioncontroller.text,
       'latitude': latitudedata,
-      'longitude': longitudedata,
-      'locationid': globaldata.LocationID,
+      'longitude':longitudedata,
+      'locationid': _myState,
       'gid': globaldata.GID,
     });
     var file = await http.MultipartFile.fromPath(' ', imageFile!.path);
@@ -72,6 +74,13 @@ class _IncidentrecordState extends State<Incidentrecord> {
           backgroundColor: Color(0xFF184f8d),
           textColor: Colors.white,
           fontSize: 16.0);
+      if(globaldata.usertype=='1'){
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
+            Dashboardscreen(),));
+      } else{
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
+            admindashboard(),));
+      }
     } else {
       Fluttertoast.showToast(
           msg: globaldata.Message,
@@ -99,7 +108,7 @@ class _IncidentrecordState extends State<Incidentrecord> {
   @override
   void initState() {
     _getStateList();
-    getCurrentlocation();
+     getCurrentlocation();
     super.initState();
   }
 
@@ -114,7 +123,7 @@ class _IncidentrecordState extends State<Incidentrecord> {
         child: Column(
           children: [
             SizedBox(
-              height: 30,
+              height: 20,
             ),
             Padding(
               padding: const EdgeInsets.all(6.0),
@@ -145,8 +154,8 @@ class _IncidentrecordState extends State<Incidentrecord> {
                             onChanged: (newValue) {
                               setState(() {
                                 _myState = newValue!;
-                                //_getCitiesList();
                               });
+                              print(_myState);
                             },
                             items: statesList.map((item) {
                               return DropdownMenuItem(
@@ -210,7 +219,7 @@ class _IncidentrecordState extends State<Incidentrecord> {
               child: TextFormField(
                 controller: descriptioncontroller,
                 minLines: 8,
-                maxLines: 40,
+                maxLines: 300,
                 decoration: InputDecoration(
                   hintText: "Type your text here.........",
                   hintStyle: TextStyle(
@@ -329,12 +338,13 @@ class _IncidentrecordState extends State<Incidentrecord> {
                             textColor: Colors.white,
                             fontSize: 16.0);
                       } else {
+                        NewfileUpload();
+                        Mail();
                         setState(() {
-                          Mail();
-                         // NewfileUpload();
-                         //  titlecontroller.clear();
-                         //  descriptioncontroller.clear();
-                         //  imageFile = null;
+                          _myState='';
+                          titlecontroller.clear();
+                          descriptioncontroller.clear();
+                          imageFile = null;
                         });
                       }
                     }),
@@ -352,20 +362,19 @@ class _IncidentrecordState extends State<Incidentrecord> {
     String password = "FD!@#shjds123JH";
 
     final smtpServer = gmail(username, password);
-    // Creating the Gmail server
-
-    // Create our email message.
     final message = Message()
       ..from = Address(username)
-      ..recipients.add('gunjanrana918@gmail.com') //recipent email
-      ..ccRecipients.addAll(['yourCCmails@example.com', 'yourCCmails@example.com']) //cc Recipents emails
+      ..recipients.add('vivek.shirke@gatewaydistriparks.com') //recipent email
+      ..ccRecipients.addAll(['vikrant.dayala@gatewaydistriparks.com',])  //cc Recipents emails
       ..bccRecipients.add(Address('test@test.com')) //bcc Recipents emails
       ..subject = 'Incident Report Data' //subject of the email
-      ..text = 'Location:${globaldata.LocationID}.\n Sublocation:${titlecontroller.text}.\n'
-          'Incident Details:${descriptioncontroller.text}'
+      // ..text = 'Location:${widget.incidentdata!.data[index].locationName}.\n Sublocation:${widget.incidentdata!.data[index].subLocation}.\n'
+      //     'Guard Name:${widget.incidentdata!.data[index].gidName}'
        ..attachments.add(FileAttachment(imageFile!))
-      ..html="<p>Location : ${globaldata.LocationID}</p>\n <p>Sublocation : ${titlecontroller.text}</p>\n <p>"
-          "Incident Details : ${descriptioncontroller.text}</p> "; //body of the email
+      ..html= "<p>Guard Name : ${globaldata.Name}</p>\n<p>Location : ${globaldata.LocationID}</p>\n "
+          "<p>Sublocation : ${titlecontroller.text}</p>\n <p>"
+          "Incident Details : ${descriptioncontroller.text}</p> "
+      ..attachments.add(FileAttachment(imageFile!)); //body of the email
 
     try {
       final sendReport = await send(message, smtpServer);
@@ -409,6 +418,8 @@ class _IncidentrecordState extends State<Incidentrecord> {
       setState(() {
         statesList = decodedata['Location'];
       });
+      print("state");
+      print(statesList);
 
       return decodedata;
     }

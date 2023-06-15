@@ -10,20 +10,20 @@ import '../Controllers/Login_controller.dart';
 import '../Models/Incident_History.dart';
 import 'Adminincident_details.dart';
 import 'userincidentdetails.dart';
-class incidentsearch extends StatefulWidget {
-  const incidentsearch({Key? key}) : super(key: key);
+class incidenthistory extends StatefulWidget {
+  const incidenthistory({Key? key}) : super(key: key);
 
   @override
-  State<incidentsearch> createState() => _incidentsearchState();
+  State<incidenthistory> createState() => _incidenthistoryState();
 }
 
-class _incidentsearchState extends State<incidentsearch> {
+class _incidenthistoryState extends State<incidenthistory> {
   final Logincontroller obj = Get.put(Logincontroller());
   TextEditingController fromdatecontroller = TextEditingController();
   TextEditingController todatecontroller = TextEditingController();
   String? selectedvalue;
   List<IncidentHistory> list = [];
- IncidentHistory? incidentdata;
+  IncidentHistory? incidentdata;
   incidentsearchbutton(context) async {
     int index=0;
     var headers = {
@@ -32,7 +32,7 @@ class _incidentsearchState extends State<incidentsearch> {
     try{
       var request = http.Request('GET', Uri.parse('http://103.25.130.254/Helpdesk/Api/IncidentHistory'));
       request.body = json.encode({
-        "UserId": globaldata.GID,
+        "UserId": '',
         "fromdt": fromdatecontroller.text,
         "todt": todatecontroller.text,
       });
@@ -40,16 +40,16 @@ class _incidentsearchState extends State<incidentsearch> {
       http.StreamedResponse response = await request.send();
       var responseData = await response.stream.bytesToString();
       if(response.statusCode == 200){
+        print("responseData");
         print(responseData);
         var incidentresponse = IncidentHistory.fromJson(jsonDecode(responseData));
         if(incidentresponse.data[index].error==false){
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => detailsview(incidentdata: incidentresponse,)));
+                  builder: (context) => Admindetailsview(incidentdata: incidentresponse,)));
 
         } else {
-          print("hello");
           Fluttertoast.showToast(
               msg: incidentresponse.data[index].msg,
               gravity: ToastGravity.BOTTOM,
@@ -177,10 +177,10 @@ class _incidentsearchState extends State<incidentsearch> {
                                 String formattedDate = DateFormat('dd-MMM-yyyy').format(pickedDate);
                                 print(formattedDate); //formatted date output using intl package =>  2021-03-16
                                 //you can implement different kind of Date Format here according to your requirement
-
                                 setState(() {
                                   todatecontroller.text = formattedDate; //set output date to TextField value.
                                 });
+                                print(todatecontroller);
                               }else{
                                 print("Date is not selected");
                               }
@@ -222,29 +222,23 @@ class _incidentsearchState extends State<incidentsearch> {
                       textColor: Colors.white,
                       fontSize: 16.0);
                 }
-               // else if(todatecontroller.text.compareTo(fromdatecontroller.text)<=0){
-               //    Fluttertoast.showToast(
-               //        msg: "Please Select Correct Date.",
-               //        gravity: ToastGravity.BOTTOM,
-               //        toastLength: Toast.LENGTH_SHORT,
-               //        timeInSecForIosWeb: 2,
-               //        backgroundColor: Color(0xFF184f8d),
-               //        textColor: Colors.white,
-               //        fontSize: 16.0);
-               //  }
+                // else if(todatecontroller.text.compareTo(fromdatecontroller.text)<=0){
+                //    Fluttertoast.showToast(
+                //        msg: "Please Select Correct Date.",
+                //        gravity: ToastGravity.BOTTOM,
+                //        toastLength: Toast.LENGTH_SHORT,
+                //        timeInSecForIosWeb: 2,
+                //        backgroundColor: Color(0xFF184f8d),
+                //        textColor: Colors.white,
+                //        fontSize: 16.0);
+                //  }
                 else {
                   incidentdata = await incidentsearchbutton(context);
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => detailsview(incidentdata: incidentdata,)));
+                  fromdatecontroller.clear();
+                  todatecontroller.clear();
+                  selectedvalue=null;
+                  }
 
-                  //historydata= await searchbutton(context);
-                  // fromdatecontroller.clear();
-                  // todatecontroller.clear();
-                  // selectedvalue=null;
-                  //}
-                }
               }),
         ],
       ),

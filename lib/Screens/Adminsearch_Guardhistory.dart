@@ -1,57 +1,55 @@
 import 'dart:convert';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:http/http.dart'as http;
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:guard_patrolling/universaldata.dart';
-import '../Controllers/Login_controller.dart';
-import '../Models/Incident_History.dart';
-import 'Adminincident_details.dart';
-import 'userincidentdetails.dart';
-class incidentsearch extends StatefulWidget {
-  const incidentsearch({Key? key}) : super(key: key);
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import '../Models/patrolling historymodel.dart';
+import '../RoundHistory/Guard_Historydetails.dart';
+import 'Admin_Guarddetails.dart';
 
+
+
+class Scanhistory extends StatefulWidget {
+  Scanhistory({Key? key,}) : super(key: key);
   @override
-  State<incidentsearch> createState() => _incidentsearchState();
+  State<Scanhistory> createState() => _ScanhistoryState();
 }
 
-class _incidentsearchState extends State<incidentsearch> {
-  final Logincontroller obj = Get.put(Logincontroller());
+class _ScanhistoryState extends State<Scanhistory> {
   TextEditingController fromdatecontroller = TextEditingController();
   TextEditingController todatecontroller = TextEditingController();
   String? selectedvalue;
-  List<IncidentHistory> list = [];
- IncidentHistory? incidentdata;
-  incidentsearchbutton(context) async {
+  List<Guardhistory> list = [];
+  Guardhistory? historydata;
+  searchbutton(context) async {
     int index=0;
     var headers = {
       'Content-Type': 'application/json'
     };
     try{
-      var request = http.Request('GET', Uri.parse('http://103.25.130.254/Helpdesk/Api/IncidentHistory'));
+      var request = http.Request('GET', Uri.parse('http://103.25.130.254/Helpdesk/Api/History'));
       request.body = json.encode({
-        "UserId": globaldata.GID,
+        "UserId": '',
         "fromdt": fromdatecontroller.text,
         "todt": todatecontroller.text,
+        "status": selectedvalue.toString()
       });
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
       var responseData = await response.stream.bytesToString();
       if(response.statusCode == 200){
-        print(responseData);
-        var incidentresponse = IncidentHistory.fromJson(jsonDecode(responseData));
-        if(incidentresponse.data[index].error==false){
+        var historyrounddata = Guardhistory.fromJson(jsonDecode(responseData));
+        if(historyrounddata.schedule[index].error==false){
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => detailsview(incidentdata: incidentresponse,)));
-
+                  builder: (context) => AdminHistorydetails(historydata: historyrounddata,)));
         } else {
-          print("hello");
+
           Fluttertoast.showToast(
-              msg: incidentresponse.data[index].msg,
+              msg: historyrounddata.schedule[index].msg,
               gravity: ToastGravity.BOTTOM,
               toastLength: Toast.LENGTH_LONG,
               timeInSecForIosWeb: 3,
@@ -59,8 +57,8 @@ class _incidentsearchState extends State<incidentsearch> {
               textColor: Colors.white,
               fontSize: 16.0);
         }
-        print(incidentresponse);
-        return incidentresponse;
+
+        return historyrounddata;
       }
       else{
         Fluttertoast.showToast(
@@ -74,7 +72,7 @@ class _incidentsearchState extends State<incidentsearch> {
       }
     }
     catch (e){
-      print("hello");
+
       Fluttertoast.showToast(
           msg: "Data Not Found!",
           gravity: ToastGravity.BOTTOM,
@@ -88,9 +86,9 @@ class _incidentsearchState extends State<incidentsearch> {
   }
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       appBar: AppBar(
-        title: Text("Incident History"),
+        title: Text("Round History"),
         backgroundColor: Color(0xFF184f8d),
       ),
       body: Column(
@@ -193,6 +191,70 @@ class _incidentsearchState extends State<incidentsearch> {
               ),
             ),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Flexible(
+                flex: 1,
+                child: RadioListTile(
+                  title: Text(
+                    "Completed",
+                    style: TextStyle(
+                        fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                  value: "1",
+                  groupValue: selectedvalue,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedvalue = value.toString();
+                    });
+                  },
+                ),
+              ),
+              Flexible(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: RadioListTile(
+                    title: Text("Delay",
+                        style: TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    value: "2",
+                    groupValue: selectedvalue,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedvalue = value.toString();
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Flexible(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: RadioListTile(
+                    title: Text("Missed",
+                        style: TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    value: "3",
+                    groupValue: selectedvalue,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedvalue = value.toString();
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Padding(padding: EdgeInsets.only(top: 15.0)),
           ElevatedButton(
               style: ButtonStyle(
                 backgroundColor:
@@ -222,28 +284,31 @@ class _incidentsearchState extends State<incidentsearch> {
                       textColor: Colors.white,
                       fontSize: 16.0);
                 }
-               // else if(todatecontroller.text.compareTo(fromdatecontroller.text)<=0){
-               //    Fluttertoast.showToast(
-               //        msg: "Please Select Correct Date.",
-               //        gravity: ToastGravity.BOTTOM,
-               //        toastLength: Toast.LENGTH_SHORT,
-               //        timeInSecForIosWeb: 2,
-               //        backgroundColor: Color(0xFF184f8d),
-               //        textColor: Colors.white,
-               //        fontSize: 16.0);
-               //  }
+                else if(selectedvalue==null){
+                  Fluttertoast.showToast(
+                      msg: "Please Activity type",
+                      gravity: ToastGravity.BOTTOM,
+                      toastLength: Toast.LENGTH_SHORT,
+                      timeInSecForIosWeb: 2,
+                      backgroundColor: Color(0xFF184f8d),
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                }
+                // else if(todatecontroller.text.compareTo(fromdatecontroller.text)>=0){
+                //   Fluttertoast.showToast(
+                //       msg: "Please Select Correct Date.",
+                //       gravity: ToastGravity.BOTTOM,
+                //       toastLength: Toast.LENGTH_SHORT,
+                //       timeInSecForIosWeb: 2,
+                //       backgroundColor: Color(0xFF184f8d),
+                //       textColor: Colors.white,
+                //       fontSize: 16.0);
+                // }
                 else {
-                  incidentdata = await incidentsearchbutton(context);
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => detailsview(incidentdata: incidentdata,)));
-
-                  //historydata= await searchbutton(context);
-                  // fromdatecontroller.clear();
-                  // todatecontroller.clear();
-                  // selectedvalue=null;
-                  //}
+                  historydata= await searchbutton(context);
+                  fromdatecontroller.clear();
+                  todatecontroller.clear();
+                  selectedvalue=null;
                 }
               }),
         ],
@@ -251,7 +316,3 @@ class _incidentsearchState extends State<incidentsearch> {
     );
   }
 }
-
-
-
-

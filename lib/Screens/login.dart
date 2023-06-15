@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:guard_patrolling/Controllers/Login_controller.dart';
 import 'package:guard_patrolling/Models/Login_models.dart';
+import 'package:guard_patrolling/Screens/Admin_dashboard.dart';
 import 'package:guard_patrolling/Screens/Dashboard.dart';
 import 'package:guard_patrolling/Screens/MobileOTP_screen.dart';
 import 'package:guard_patrolling/universaldata.dart';
@@ -44,10 +46,12 @@ class _LoginscreenState extends State<Loginscreen> {
   var Generateotp;
 
 
+
   Future<void> main() async{
     SharedPreferences prefs =await SharedPreferences.getInstance();
     globaldata.GID = prefs.getString('GID')!;
     globaldata.LoginID = prefs.getString("LoginID")!;
+    globaldata.usertype = prefs.getString("UserType")!;
     print(globaldata.GID);
     globaldata.Name = prefs.getString("Name").toString();
     globaldata.PhoneNo = prefs.getString('Mobile').toString();
@@ -55,12 +59,19 @@ class _LoginscreenState extends State<Loginscreen> {
     globaldata.Address = prefs.getString('Address').toString();
     globaldata.State = prefs.getString('State').toString();
     globaldata.Picode = prefs.getString('Picode').toString();
-    if ( globaldata.GID.isNotEmpty){
-      Future.delayed(Duration(seconds: 5), (){
+    print(globaldata.GID);
+    if (globaldata.GID.isNotEmpty){
+      Future.delayed(Duration(seconds: 3), (){
         print("Executed after 5 seconds");
       });
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
-          Dashboardscreen(),));
+       if(globaldata.usertype=="1"){
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
+            Dashboardscreen(),));
+      } else {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
+            admindashboard(),));
+      }
+
     }
     else{
       await Future.delayed(const Duration(milliseconds: 1000));

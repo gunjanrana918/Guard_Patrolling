@@ -1,4 +1,5 @@
 class globaldata{
+ static String usertype='';
   static String msg = ' ';
   static String PostMessage = "";
   static String LoginMessage = "";

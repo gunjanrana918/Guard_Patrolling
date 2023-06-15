@@ -15,7 +15,6 @@ int index = 0;
 class _ProfilemenuState extends State<Profilemenu> {
   final Profilecontroller newprofile = Get.put(Profilecontroller());
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +25,7 @@ class _ProfilemenuState extends State<Profilemenu> {
       body: ListView(
         children: [
         Container(
-        height: 160,
+        height: 140,
           child: Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,13 +37,15 @@ class _ProfilemenuState extends State<Profilemenu> {
                   child: CircleAvatar(
                     radius: 60.0,
                     backgroundImage:
-                    NetworkImage('https://avatars0.githubusercontent.com/u/28812093?s=460&u=06471c90e03cfd8ce2855d217d157c93060da490&v=4'),
+                    NetworkImage(
+                        "https://cdn.icon-icons.com/icons2/1378/PNG/512/"
+                            "avatardefault_92824.png"),
                   ),
                 ),
               ],),
           ),
         ),
-        SizedBox(height: 5,),
+
         Column(
           children: [
             Padding(

@@ -9,6 +9,7 @@ import '../Models/patrolling historymodel.dart';
 import '../RoundHistory/Guard_Historydetails.dart';
 
 
+
 class shiftthistory extends StatefulWidget {
 
   shiftthistory({Key? key,}) : super(key: key);
@@ -21,7 +22,6 @@ class _shiftthistoryState extends State<shiftthistory> {
   TextEditingController fromdatecontroller = TextEditingController();
   TextEditingController todatecontroller = TextEditingController();
   String? selectedvalue;
-  //History API
   List<Guardhistory> list = [];
   Guardhistory? historydata;
   searchbutton(context) async {
@@ -41,18 +41,15 @@ class _shiftthistoryState extends State<shiftthistory> {
      http.StreamedResponse response = await request.send();
      var responseData = await response.stream.bytesToString();
      if(response.statusCode == 200){
-       print(responseData);
        var historyrounddata = Guardhistory.fromJson(jsonDecode(responseData));
        if(historyrounddata.schedule[index].error==false){
-         print("history data");
-         print(historyrounddata!.schedule.length);
          Navigator.push(
-             context,
-             MaterialPageRoute(
-                 builder: (context) => Historydetails(historydata: historyrounddata,)));
+               context,
+               MaterialPageRoute(
+                   builder: (context) => Historydetails(historydata: historyrounddata,)));
 
        } else {
-         print("hello");
+
          Fluttertoast.showToast(
              msg: historyrounddata.schedule[index].msg,
              gravity: ToastGravity.BOTTOM,
@@ -62,8 +59,7 @@ class _shiftthistoryState extends State<shiftthistory> {
              textColor: Colors.white,
              fontSize: 16.0);
        }
-       print("HistoryData");
-       print(historyrounddata);
+
        return historyrounddata;
      }
      else{
@@ -78,7 +74,7 @@ class _shiftthistoryState extends State<shiftthistory> {
      }
    }
    catch (e){
-     print("hello");
+
      Fluttertoast.showToast(
          msg: "Data Not Found!",
          gravity: ToastGravity.BOTTOM,

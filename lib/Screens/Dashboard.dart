@@ -18,7 +18,7 @@ import 'package:guard_patrolling/Models/NextRound.dart';
 import 'package:guard_patrolling/Models/NightSchedulemodel.dart';
 import 'package:guard_patrolling/RoundHistory/Missedround_details.dart';
 import 'package:guard_patrolling/Screens/Change_password.dart';
-import 'package:guard_patrolling/Screens/HistoryTab.dart';
+import 'package:guard_patrolling/Screens/Guard_HistorySearch.dart';
 import 'package:guard_patrolling/Screens/Incident_search.dart';
 import 'package:guard_patrolling/Screens/Profile_menu.dart';
 import 'package:guard_patrolling/Screens/Scanning_report.dart';
@@ -81,6 +81,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
   late String scannedQrcode ;
   var todayroundvalue ="";
   var completeroundvalue ="";
+  var totalupcoming='';
   var lastroundlocation =""; var lastroundtime ="";
   var nextroundvisitname ="";   var nextroundvisittime ="";
   var ontimeroundvalue ="";
@@ -173,7 +174,6 @@ class _DashboardscreenState extends State<Dashboardscreen> {
       globaldata.scanid = Scanid;
       print("!!!!!");
       print(globaldata.scanid);
-      try{
         scandata =  await fetchdata.Scandetails();
         print("###########");
         print(scandata?.qrcodeTable.error);
@@ -194,11 +194,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
               fontSize: 16.0);
         }
       }
-     catch(e){
-        print("errrorrrrrrrrrrrr");
-        print(e);
-     }
-  }
+
   ///Get Lattitude and Longitude///
   getCurrentlocation() async {
     final geoposition = await Geolocator.getCurrentPosition(
@@ -556,7 +552,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                               style: TextStyle(
                                   fontWeight: FontWeight.w500, color: Colors.black),
                             ),
-                            trailing: Text(completeroundvalue,
+                            trailing: Text(totalupcoming,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     color: Colors.black)),
@@ -594,6 +590,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                             )],
                         ),
                         onTap: () {
+                          getCurrentlocation();
                           _scanQR();
                         },
                       ),
@@ -782,7 +779,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
   }
 
   _callNumber() async{
-    const number = '09910036432'; //set the number here
+    const number = '09987559859'; //set the number here
     bool? res = await FlutterPhoneDirectCaller.callNumber(number);
   }
 }

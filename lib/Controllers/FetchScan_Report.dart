@@ -29,23 +29,23 @@ String? ScanMessage;
   }
   Scandetails() async {
     isDataloading(true);
+    getCurrentlocation();
     var headers = {
       'Content-Type': 'application/json'
     };
     var request = http.Request('GET', Uri.parse('http://103.25.130.254/Helpdesk/Api/qrcode'));
     request.body = json.encode({
       "qrid": globaldata.scanid,
-      "DLatitude": globaldata.Dlattitude,
-      "DLongitude": globaldata.Dlongitude
+      "DLatitude": latitudedata,
+      "DLongitude": longitudedata
     });
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     var responseData = await response.stream.bytesToString();
     try {
       if(response.statusCode == 200){
-        print("*****");
-        print(responseData);
         var scaninfo = Scandata.fromJson(jsonDecode(responseData));
+        // print(scaninfo['qrcodeTable'])
         var scanmessage = scaninfo.qrcodeTable.msg;
         ScanMessage = scanmessage;
         globaldata.Scanmessage = scaninfo.qrcodeTable.msg;
