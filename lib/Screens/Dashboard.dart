@@ -178,6 +178,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
         print("###########");
         print(scandata?.qrcodeTable.error);
         if(scandata?.qrcodeTable.error==false){
+
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -536,14 +537,6 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                           child: ListTile(
                             onTap: () async {
                               nextdata = await Nextdata.Nextroundschedule();
-                              Fluttertoast.showToast(
-                                  msg: Nextdata.nextmessage,
-                                  gravity: ToastGravity.BOTTOM,
-                                  toastLength: Toast.LENGTH_LONG,
-                                  timeInSecForIosWeb: 5,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0);
                               Navigator.push(context, MaterialPageRoute(
                                   builder: (context) => Nextround(nextdata:nextdata)));
                               },
@@ -603,7 +596,6 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                         width: 150,
                         child: MaterialButton(
                           onPressed: (){
-                            // alllocation = await locationdata.mylocation();
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

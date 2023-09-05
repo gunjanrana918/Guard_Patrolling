@@ -39,9 +39,9 @@ class _TodayroundState extends State<Todayround> {
                     itemBuilder: (BuildContext context, int index){
                       return widget.dayround!.schedule[index].error==false?
                       Container(
-                        height: 150,
+                        height: 110,
                         child: Padding(
-                          padding: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.all(12.0),
                           child: Card(
                             margin: EdgeInsets.all(3.0),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
@@ -66,22 +66,22 @@ class _TodayroundState extends State<Todayround> {
                                       child: Text(widget.dayround!.schedule[index].locationName,style: TextStyle(color: Color(0xFF184f8d),fontSize: 16.0,  ),),
                                     )
                                   ],),
-                                Padding(padding: EdgeInsets.only(top: 5.0,)),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      flex:1,
-                                      child: Padding(padding: EdgeInsets.only(top: 5.0,left: 12.0),
-                                          child: Text("Checkpoint",
-                                            style: TextStyle(color: Colors.black,fontSize: 17.0,  fontWeight: FontWeight.bold ),)),
-                                    ),
-                                    Expanded(child:  Text(widget.dayround!.schedule[index].checkPointName,softWrap: true,
-                                      style: TextStyle(color: Color(0xFF184f8d),fontSize: 17.0, ),))
-
-                                  ],
-                                ),
-                                Padding(padding: EdgeInsets.only(top: 5.0)),
+                                //Padding(padding: EdgeInsets.only(top: 5.0,)),
+                                // Row(
+                                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                //   children: [
+                                //     Flexible(
+                                //       flex:1,
+                                //       child: Padding(padding: EdgeInsets.only(top: 5.0,left: 12.0),
+                                //           child: Text("Checkpoint",
+                                //             style: TextStyle(color: Colors.black,fontSize: 17.0,  fontWeight: FontWeight.bold ),)),
+                                //     ),
+                                //     Expanded(child:  Text(widget.dayround!.schedule[index].checkPointName,softWrap: true,
+                                //       style: TextStyle(color: Color(0xFF184f8d),fontSize: 17.0, ),))
+                                //
+                                //   ],
+                                // ),
+                               // Padding(padding: EdgeInsets.only(top: 5.0)),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -107,9 +107,9 @@ class _TodayroundState extends State<Todayround> {
                     itemBuilder: (BuildContext context, int index){
                       return widget.nightround?.schedule[index].error==false?
                       Container(
-                        height: 150,
+                        height: 110,
                         child: Padding(
-                          padding: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.all(12.0),
                           child: Card(
                             margin: EdgeInsets.all(3.0),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
@@ -133,19 +133,6 @@ class _TodayroundState extends State<Todayround> {
                                       child: Text(widget.nightround!.schedule[index].locationName,style: TextStyle(color: Color(0xFF184f8d),fontSize: 16.0,  ),),
                                     ),
                                   ],),
-                                Padding(padding: EdgeInsets.only(top: 5.0)),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Padding(padding: EdgeInsets.only(top: 5.0,left: 8.0),
-                                          child: Text("Checkpoint",
-                                            style: TextStyle(color: Colors.black,fontSize: 17.0,  fontWeight: FontWeight.bold ),)),
-                                    ),
-                                    Expanded(child:  Padding(padding: EdgeInsets.only(top: 5.0,),
-                                        child: Text(widget.nightround!.schedule[index].checkPointName,
-                                          style: TextStyle(color: Color(0xFF184f8d),fontSize: 17.0, ),)),)],
-                                ),
                                 Padding(padding: EdgeInsets.only(top: 5.0)),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

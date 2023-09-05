@@ -32,6 +32,7 @@ class Schedule {
   String shift;
   String scheduleName;
   String checkPointName;
+  String uncheckPointName;
   String scheduleTime;
   String locationName;
   String completeTime;
@@ -49,6 +50,7 @@ class Schedule {
     required this.shift,
     required this.scheduleName,
     required this.checkPointName,
+    required this.uncheckPointName,
     required this.scheduleTime,
     required this.locationName,
     required this.completeTime,
@@ -61,20 +63,21 @@ class Schedule {
 
   factory Schedule.fromJson(Map<String, dynamic> json) => Schedule(
     error: json["error"],
-    msg: json["msg"],
+    msg: json["msg"]!,
     scheduleId: json["ScheduleID"],
-    scheduleToDate: json["ScheduleToDate"],
-    shift: json["Shift"],
-    scheduleName: json["ScheduleName"],
+    scheduleToDate: json["ScheduleToDate"]!,
+    shift: json["Shift"]!,
+    scheduleName: json["ScheduleName"]!,
     checkPointName: json["checkPointName"],
-    scheduleTime: json["ScheduleTime"],
+    uncheckPointName: json["UncheckPointName"],
+    scheduleTime: json["ScheduleTime"]!,
     locationName: json["LocationName"],
     completeTime: json["CompleteTime"],
     reportdate: json["Reportdate"],
-    status: json["status"],
+    status: json["status"]!,
     reportDescription: json["ReportDescription"],
     photoUrl: json["PhotoUrl"],
-    name: json["Name"],
+    name: json["Name"]!,
   );
 
   Map<String, dynamic> toJson() => {
@@ -83,8 +86,9 @@ class Schedule {
     "ScheduleID": scheduleId,
     "ScheduleToDate": scheduleToDate,
     "Shift": shift,
-    "ScheduleName": scheduleName,
+    "ScheduleName":scheduleName,
     "checkPointName": checkPointName,
+    "UncheckPointName": uncheckPointName,
     "ScheduleTime": scheduleTime,
     "LocationName": locationName,
     "CompleteTime": completeTime,
@@ -95,3 +99,5 @@ class Schedule {
     "Name": name,
   };
 }
+
+

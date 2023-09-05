@@ -234,6 +234,9 @@ class _incidentsearchState extends State<incidentsearch> {
                //  }
                 else {
                   incidentdata = await incidentsearchbutton(context);
+                  fromdatecontroller.clear();
+                  todatecontroller.clear();
+                  selectedvalue=null;
                   // Navigator.push(
                   //     context,
                   //     MaterialPageRoute(

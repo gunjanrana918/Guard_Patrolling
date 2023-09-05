@@ -49,7 +49,7 @@ class _ScanhistoryState extends State<Scanhistory> {
         } else {
 
           Fluttertoast.showToast(
-              msg: historyrounddata.schedule[index].msg,
+              msg: historyrounddata.schedule[index].msg as String,
               gravity: ToastGravity.BOTTOM,
               toastLength: Toast.LENGTH_LONG,
               timeInSecForIosWeb: 3,
@@ -196,27 +196,10 @@ class _ScanhistoryState extends State<Scanhistory> {
             children: [
               Flexible(
                 flex: 1,
-                child: RadioListTile(
-                  title: Text(
-                    "Completed",
-                    style: TextStyle(
-                        fontSize: 18.0, fontWeight: FontWeight.bold),
-                  ),
-                  value: "1",
-                  groupValue: selectedvalue,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedvalue = value.toString();
-                    });
-                  },
-                ),
-              ),
-              Flexible(
-                flex: 1,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: RadioListTile(
-                    title: Text("Delay",
+                    title: Text("Visited",
                         style: TextStyle(
                             fontSize: 18.0, fontWeight: FontWeight.bold)),
                     value: "2",
@@ -229,11 +212,6 @@ class _ScanhistoryState extends State<Scanhistory> {
                   ),
                 ),
               ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
               Flexible(
                 flex: 1,
                 child: Padding(

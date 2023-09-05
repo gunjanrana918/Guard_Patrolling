@@ -30,7 +30,6 @@ class _IncidentrecordState extends State<Incidentrecord> {
   TextEditingController titlecontroller = new TextEditingController();
   TextEditingController descriptioncontroller = new TextEditingController();
   final Getlocation obj = Get.put(Getlocation());
-
   File? imageFile;
   String latitudedata = "";
   String longitudedata = "";
@@ -39,9 +38,23 @@ class _IncidentrecordState extends State<Incidentrecord> {
   var message;
   DateTime now = DateTime.now();
   String formattedTime = DateFormat.Hms().format(DateTime.now());
-
+  String? incidenttime;
+  getCurrentlocation() async {
+    final geoposition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      latitudedata = '${geoposition.latitude}';
+      print("latitudedata");
+      print(latitudedata);
+      longitudedata = '${geoposition.longitude}';
+    });
+  }
   NewfileUpload() async {
     getCurrentlocation();
+    String formattedTime = DateFormat.Hm().format(DateTime.now());
+    setState(() {
+      incidenttime=formattedTime;
+    });
     var request = http.MultipartRequest(
         'POST', Uri.parse('http://103.25.130.254/Helpdesk/Api/Incident'));
     request.fields.addAll({
@@ -49,21 +62,19 @@ class _IncidentrecordState extends State<Incidentrecord> {
       'incidentdetails': descriptioncontroller.text,
       'latitude': latitudedata,
       'longitude':longitudedata,
-      'locationid': _myState,
+      'location': _myState,
       'gid': globaldata.GID,
     });
     var file = await http.MultipartFile.fromPath(' ', imageFile!.path);
     request.files.add(file);
     var response = await request.send();
     if (response.statusCode == 200) {
-      var responseData = await response.stream.bytesToString();
+      var Response = await response.stream.bytesToString();
       print("DATA1");
-      print(responseData);
-      var parsedata = IncidentReport.fromJson(json.decode(responseData));
+      print(Response);
+      var parsedata = IncidentReport.fromJson(jsonDecode(Response));
       print(parsedata.incidentTable[0].msg);
       message = parsedata.incidentTable[0].msg;
-      print("message");
-      print(message);
       globaldata.Message = message;
       print(globaldata.Message);
       Fluttertoast.showToast(
@@ -92,24 +103,11 @@ class _IncidentrecordState extends State<Incidentrecord> {
           fontSize: 16.0);
     }
   }
-
-//Get current location
-  getCurrentlocation() async {
-    final geoposition = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    setState(() {
-      latitudedata = '${geoposition.latitude}';
-      print("latitudedata");
-      print(latitudedata);
-      longitudedata = '${geoposition.longitude}';
-    });
-  }
-
   @override
   void initState() {
+    super.initState();
     _getStateList();
      getCurrentlocation();
-    super.initState();
   }
 
   @override
@@ -136,7 +134,8 @@ class _IncidentrecordState extends State<Incidentrecord> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Expanded(
-                      child: DropdownButtonHideUnderline(
+                      child:
+                      DropdownButtonHideUnderline(
                         child: ButtonTheme(
                           alignedDropdown: true,
                           child: DropdownButton(
@@ -160,7 +159,7 @@ class _IncidentrecordState extends State<Incidentrecord> {
                             items: statesList.map((item) {
                               return DropdownMenuItem(
                                 child: Text(item['LocationName']),
-                                value: item['LocationID'].toString(),
+                                value: item['LocationName'].toString(),
                               );
                             }).toList(),
                           ),
@@ -187,7 +186,8 @@ class _IncidentrecordState extends State<Incidentrecord> {
             Padding(
               padding: EdgeInsets.all(6.0),
               child: TextFormField(
-                controller: titlecontroller, minLines: 2,
+                controller: titlecontroller,
+                minLines: 2,
                 maxLines: 10,
                 decoration: InputDecoration(
                   hintText: "Type your text here.........",
@@ -339,13 +339,13 @@ class _IncidentrecordState extends State<Incidentrecord> {
                             fontSize: 16.0);
                       } else {
                         NewfileUpload();
-                        Mail();
                         setState(() {
                           _myState='';
                           titlecontroller.clear();
                           descriptioncontroller.clear();
                           imageFile = null;
                         });
+                        Mail();
                       }
                     }),
               ),
@@ -364,16 +364,16 @@ class _IncidentrecordState extends State<Incidentrecord> {
     final smtpServer = gmail(username, password);
     final message = Message()
       ..from = Address(username)
-      ..recipients.add('vivek.shirke@gatewaydistriparks.com') //recipent email
-      ..ccRecipients.addAll(['vikrant.dayala@gatewaydistriparks.com',])  //cc Recipents emails
+      ..recipients.add('vivek.shirke@gatewaydistriparks.com',) //recipent email
+      ..ccRecipients.addAll(['itsupport.gdlm@gatewaydistriparks.com','gunjan.rana@gatewaydistriparks.com',])  //cc Recipents emails
       ..bccRecipients.add(Address('test@test.com')) //bcc Recipents emails
       ..subject = 'Incident Report Data' //subject of the email
       // ..text = 'Location:${widget.incidentdata!.data[index].locationName}.\n Sublocation:${widget.incidentdata!.data[index].subLocation}.\n'
       //     'Guard Name:${widget.incidentdata!.data[index].gidName}'
        ..attachments.add(FileAttachment(imageFile!))
-      ..html= "<p>Guard Name : ${globaldata.Name}</p>\n<p>Location : ${globaldata.LocationID}</p>\n "
+      ..html= "<p>Guard Name : ${globaldata.Name}</p>\n<p>Time :${incidenttime}</p>\n</p><p>Location : ${_myState}</p>\n "
           "<p>Sublocation : ${titlecontroller.text}</p>\n <p>"
-          "Incident Details : ${descriptioncontroller.text}</p> "
+          "Incident Details : ${descriptioncontroller.text}</p>"
       ..attachments.add(FileAttachment(imageFile!)); //body of the email
 
     try {
@@ -390,14 +390,12 @@ class _IncidentrecordState extends State<Incidentrecord> {
     setState(() {
       imageFile = File(pickedFile!.path);
     });
-    print("ABCD");
     print(imageFile);
   }
 
 // Get Location information by API
   List statesList = [];
   String _myState = "";
-
   _getStateList() async {
     var headers = {'Content-Type': 'application/json'};
     var request = http.Request(
@@ -408,18 +406,11 @@ class _IncidentrecordState extends State<Incidentrecord> {
     if (response.statusCode == 200) {
       print(responseData);
       var decodedata = (jsonDecode(responseData));
-      print("GetLocation");
-      print(decodedata);
       var locationid = decodedata['Location'][index]["LocationID"];
-      print("decodedata");
-      print(locationid);
       globaldata.LocationID = locationid;
-      print(globaldata.LocationID);
       setState(() {
         statesList = decodedata['Location'];
       });
-      print("state");
-      print(statesList);
 
       return decodedata;
     }

@@ -788,16 +788,17 @@ class OTPvalidcontroller extends GetxController{
       print("&&&&&");
       print(validnewotp);
       if(validotpresponse.login[index].error==false){
-        Fluttertoast.showToast(
-            msg:validotpresponse.login[index].msg,
-            gravity: ToastGravity.BOTTOM,
-            toastLength: Toast.LENGTH_LONG,
-            timeInSecForIosWeb: 5,
-            backgroundColor: Color(0xFF184f8d),
-            textColor: Colors.white,
-            fontSize: 16.0);
         return Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => SmsVerificationPage()));
+        // Fluttertoast.showToast(
+        //     msg:validotpresponse.login[index].msg,
+        //     gravity: ToastGravity.BOTTOM,
+        //     toastLength: Toast.LENGTH_LONG,
+        //     timeInSecForIosWeb: 5,
+        //     backgroundColor: Color(0xFF184f8d),
+        //     textColor: Colors.white,
+        //     fontSize: 16.0);
+
       } else {
         Fluttertoast.showToast(
             msg:validotpresponse.login[index].msg,

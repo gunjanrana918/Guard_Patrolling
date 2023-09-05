@@ -51,7 +51,7 @@ class _shiftthistoryState extends State<shiftthistory> {
        } else {
 
          Fluttertoast.showToast(
-             msg: historyrounddata.schedule[index].msg,
+             msg: historyrounddata.schedule[index].msg as String,
              gravity: ToastGravity.BOTTOM,
              toastLength: Toast.LENGTH_LONG,
              timeInSecForIosWeb: 3,
@@ -198,27 +198,10 @@ class _shiftthistoryState extends State<shiftthistory> {
             children: [
               Flexible(
                 flex: 1,
-                child: RadioListTile(
-                  title: Text(
-                    "Completed",
-                    style: TextStyle(
-                        fontSize: 18.0, fontWeight: FontWeight.bold),
-                  ),
-                  value: "1",
-                  groupValue: selectedvalue,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedvalue = value.toString();
-                    });
-                  },
-                ),
-              ),
-              Flexible(
-                flex: 1,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: RadioListTile(
-                    title: Text("Delay",
+                    title: Text("Visited",
                         style: TextStyle(
                             fontSize: 18.0, fontWeight: FontWeight.bold)),
                     value: "2",
@@ -231,11 +214,6 @@ class _shiftthistoryState extends State<shiftthistory> {
                   ),
                 ),
               ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
               Flexible(
                 flex: 1,
                 child: Padding(
@@ -256,6 +234,7 @@ class _shiftthistoryState extends State<shiftthistory> {
               ),
             ],
           ),
+
           Padding(padding: EdgeInsets.only(top: 15.0)),
           ElevatedButton(
               style: ButtonStyle(

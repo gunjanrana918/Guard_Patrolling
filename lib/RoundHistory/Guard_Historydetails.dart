@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guard_patrolling/Models/patrolling%20historymodel.dart';
+import 'package:readmore/readmore.dart';
 
 class Historydetails extends StatefulWidget {
   Guardhistory? historydata;
@@ -44,50 +45,8 @@ class _HistorydetailsState extends State<Historydetails> {
                   ),
                   child: ExpansionTile(
                     title:
-                        Text(widget.historydata!.schedule[index0].scheduleToDate,style: TextStyle(color: Colors.black,fontSize: 16.0, fontWeight: FontWeight.w500 )),
+                        Text(widget.historydata!.schedule[index0].reportdate,style: TextStyle(color: Colors.black,fontSize: 16.0, fontWeight: FontWeight.w500 )),
                     children: [
-                      Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              "Location : ",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Text(
-                            widget.historydata!.schedule[index0].locationName,
-                            style: TextStyle(
-                              color: Color(0xFF184f8d),
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              "CheckPoint : ",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Text(
-                            widget.historydata!.schedule[index0].checkPointName,
-                            style: TextStyle(
-                              color: Color(0xFF184f8d),
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ],
-                      ),
                       Row(
                         children: [
                           Padding(
@@ -96,15 +55,15 @@ class _HistorydetailsState extends State<Historydetails> {
                               "Schedule At : ",
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 16.0,
+                                  fontSize: 15.0,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
                           Text(
-                            widget.historydata!.schedule[index0].scheduleTime,
+                            widget.historydata!.schedule[index0].scheduleTime as String,
                             style: TextStyle(
                               color: Color(0xFF184f8d),
-                              fontSize: 16.0,
+                              fontSize: 15.0,
                             ),
                           ),
                         ],
@@ -117,7 +76,7 @@ class _HistorydetailsState extends State<Historydetails> {
                               "Complete At : ",
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 16.0,
+                                  fontSize: 15.0,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -125,7 +84,7 @@ class _HistorydetailsState extends State<Historydetails> {
                             widget.historydata!.schedule[index0].completeTime,
                             style: TextStyle(
                               color: Color(0xFF184f8d),
-                              fontSize: 16.0,
+                              fontSize: 15.0,
                             ),
                           ),
                         ],
@@ -135,18 +94,80 @@ class _HistorydetailsState extends State<Historydetails> {
                           Padding(
                             padding: EdgeInsets.only(left: 8.0),
                             child: Text(
-                              "Details : ",
+                              "Location : ",
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 16.0,
+                                  fontSize: 15.0,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
                           Text(
-                            widget.historydata!.schedule[index0].reportDescription,
+                            widget.historydata!.schedule[index0].locationName,
                             style: TextStyle(
                               color: Color(0xFF184f8d),
-                              fontSize: 16.0,
+                              fontSize: 15.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              "CheckPoint : ",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Text(
+                            widget.historydata!.schedule[index0].checkPointName,
+                            style: TextStyle(
+                              color: Color(0xFF184f8d),
+                              fontSize: 15.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              "UncheckPoint : ",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Text(
+                            widget.historydata!.schedule[index0].uncheckPointName,
+                            style: TextStyle(
+                              color: Color(0xFF184f8d),
+                              fontSize: 15.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Padding(padding: EdgeInsets.only(left: 8.0),
+                            child: Text("Observation : ",style: TextStyle(color: Colors.black,fontSize: 16.0, fontWeight: FontWeight.bold ),),
+                          ),
+                          Expanded(
+                            child: ReadMoreText(widget.historydata!.schedule[index0].reportDescription,
+                              style: TextStyle(fontSize: 16,color: Color(0xFF184f8d)),
+                              trimLines: 2,
+                              colorClickableText: Colors.blue,
+                              textAlign: TextAlign.justify,
+                              trimMode: TrimMode.Length,
+                              trimCollapsedText: '.....Show more',
+                              trimExpandedText: '.....Show less',
+                              lessStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                              moreStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],

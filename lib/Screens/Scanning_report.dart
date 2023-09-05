@@ -62,37 +62,29 @@ class _ScanningreportState extends State<Scanningreport> {
 
   }
   //****Send Scan data API*****////
-
   Sendreprtdata() async{
-    DateTime now = DateTime.now();
     String formattedTime = DateFormat.Hm().format(DateTime.now());
     setState(() {
       newtime=formattedTime;
     });
-    print("newfile");
-    print(newtime);
-    print("object");
-    print(newtime);
     if(newtime==globaldata.sceduletime){
       Comparetime="1";
     }
     else{
       Comparetime="2";
     }
-    print("Comparetime");
-    print(Comparetime);
     var request = http.MultipartRequest('POST', Uri.parse('http://103.25.130.254/Helpdesk/Api/Scanreport'));
     request.fields.addAll({
       'reportname': ' ',
       'reportdesc': remarkcontroller.text,
       "qrid" : globaldata.scanid,
       'gid': globaldata.GID,
-      'Scheduleid': widget.scandata!.qrcodeTable.scheduleId,
+      'Scheduleid': '0',
       'checkid': _mycheckpint,
       'locationid': widget.scandata!.qrcodeTable.locationCode,
       'reportlocation':  widget.scandata!.qrcodeTable.locationName,
        'reportcheckpoint': _selecteCategorys.toString(),
-      // 'Uncheckpoint':Unselectitem.toString(),
+       'Uncheckpoint':Unselectitem.toString(),
       'latitude':latitudedata,
       'longitude':longitudedata,
       'shift': fetchdata.globalshift,
@@ -103,13 +95,9 @@ class _ScanningreportState extends State<Scanningreport> {
     var response = await request.send();
     var responseData = await response.stream.bytesToString();
     if(response.statusCode==200){
-      print("DATA1");
-      print(responseData);
       var newparsedata = SendQrReport.fromJson(json.decode(responseData));
       print(newparsedata.scanreportTable[index].msg);
       newmessage = newparsedata.scanreportTable[index].msg;
-      print("message");
-      print(newmessage);
       globaldata.PostMessage = newmessage;
       print( globaldata.PostMessage );
       Fluttertoast.showToast(
@@ -120,6 +108,8 @@ class _ScanningreportState extends State<Scanningreport> {
           backgroundColor: Color(0xFF184f8d),
           textColor: Colors.white,
           fontSize: 16.0);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
+          Dashboardscreen(),));
       if(globaldata.usertype=='1'){
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
             Dashboardscreen(),));
@@ -191,50 +181,6 @@ class _ScanningreportState extends State<Scanningreport> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(7),
-              child: Container(
-                width: 400,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5.0),
-                    border: Border.all(color: Colors.blueAccent)
-                ),
-                padding: EdgeInsets.only(left: 5, right: 0, top: 5),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: DropdownButtonHideUnderline(
-                        child: ButtonTheme(
-                          alignedDropdown: false,
-                          child: DropdownButton<String>(
-                            value: _mycheckpint.isNotEmpty ? _mycheckpint:null,
-                            iconSize: 50,
-                            iconEnabledColor: Color(0xFF184f8d),
-                            icon: (null),
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                            hint: Text('Select Parameter',style: TextStyle(color: Colors.black)),
-                            onChanged: ( newValue) {
-                              setState(() {
-                                _mycheckpint = newValue!;
-                              });
-                            },
-                            items: widget.scandata!.qrcodeTable.checkPoitTable.map((item) {
-                              return  DropdownMenuItem(
-                                child:  Text(item.checkPointName),
-                                value: item.checkPointId.toString(),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
             //Padding(padding: EdgeInsets.only(top: 10.0)),
             Container(
               height: 230,
@@ -250,7 +196,6 @@ class _ScanningreportState extends State<Scanningreport> {
                       });
                   }
                   ),
-
             ),
             Padding(padding: EdgeInsets.all(5.0),
               child:
@@ -265,8 +210,8 @@ class _ScanningreportState extends State<Scanningreport> {
                 width: 400,
                 child: TextFormField(
                   controller: remarkcontroller,
-                  minLines: 30,
-                  maxLines: 200,
+                  minLines: 8,
+                  maxLines: 300,
                   decoration: InputDecoration(
                     hintText: "Type your text here.........",
                     hintStyle: TextStyle(color: Colors.black),
@@ -343,8 +288,19 @@ class _ScanningreportState extends State<Scanningreport> {
                             backgroundColor: Color(0xFF184f8d),
                             textColor: Colors.white,
                             fontSize: 16.0);
-                      } else
-                        if(_mycheckpint.isEmpty){
+                      }  else
+                      if(widget.scandata!.qrcodeTable.locationName.isEmpty){
+                        Fluttertoast.showToast(
+                            msg: "Please select Location.",
+                            gravity: ToastGravity.BOTTOM,
+                            toastLength: Toast.LENGTH_LONG,
+                            timeInSecForIosWeb: 6,
+                            backgroundColor: Color(0xFF184f8d),
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      }
+                      else
+                        if(_selecteCategorys.isEmpty){
                           Fluttertoast.showToast(
                               msg: "Please select checkparameter.",
                               gravity: ToastGravity.BOTTOM,
@@ -367,11 +323,11 @@ class _ScanningreportState extends State<Scanningreport> {
                         }
                         else {
                           Sendreprtdata();
-                          Mail();
                               setState(() {
                                 widget.scandata!.qrcodeTable.locationName = "";
                                 remarkcontroller.clear();
                                 passcontroller.clear();
+                                _selecteCategorys.clear();
                                 _mycheckpint = "";
                                 imageFile = null;
                               });
@@ -386,18 +342,34 @@ class _ScanningreportState extends State<Scanningreport> {
     );
   }
 
-  void _onCategorySelected(bool selected, category_name,) {
+  void _onCategorySelected(bool selected, category_id,) {
+    int i=0;
     if (selected == true) {
       setState(() {
-        _selecteCategorys.add(category_name);
+        _selecteCategorys.add(category_id);
+        print("select");
         print(_selecteCategorys);
+        Unselectitem.clear();
+        for ( i = 0; i < widget.scandata!.qrcodeTable.checkPoitTable.length; i++) {
+          if(!_selecteCategorys.contains(widget.scandata!.qrcodeTable.checkPoitTable[i].checkPointName))
+          {
+            Unselectitem.add(widget.scandata!.qrcodeTable.checkPoitTable[i].checkPointName);
+          }
+        }
+        print("data");
+        print(Unselectitem);
       });
 
 
     }
     else {
       setState(() {
-       _selecteCategorys.remove(category_name);
+        _selecteCategorys.remove(category_id);
+        print('object');
+        print(_selecteCategorys);
+        Unselectitem.add(category_id);
+          print("newdata");
+          print(Unselectitem);
       });
     }
 
@@ -411,7 +383,7 @@ class _ScanningreportState extends State<Scanningreport> {
     final message = Message()
       ..from = Address(username)
       ..recipients.add('vivek.shirke@gatewaydistriparks.com') //recipent email
-      ..ccRecipients.addAll(['vikrant.dayala@gatewaydistriparks.com','gunjan.rana@gatewaydistriparks.com']) //cc Recipents emails
+      ..ccRecipients.addAll(['itsupport.gdlm@gatewaydistriparks.com','gunjan.rana@gatewaydistriparks.com']) //cc Recipents emails
       ..bccRecipients.add(Address('test@test.com')) //bcc Recipents emails
       ..subject = 'Patrolling Report Data' //subject of the email
       ..attachments.add(FileAttachment(imageFile!))

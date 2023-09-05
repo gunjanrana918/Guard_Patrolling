@@ -35,7 +35,7 @@ Future<Uint8List> makePdf(Guardhistory historydata,int inde) async {
               children: [
                 pw.Text('Name :'  " ", style: pw.TextStyle(font: newfont,fontSize: 20,color: PdfColors.black),),
                 pw.Text(
-                  historydata.schedule[index].name,
+                  historydata.schedule[index].name as String,
                   style: pw.TextStyle(font: newfont,fontSize: 20.0,color: PdfColors.black),
                   textAlign: pw.TextAlign.center,
                 ),
@@ -46,7 +46,7 @@ Future<Uint8List> makePdf(Guardhistory historydata,int inde) async {
               children: [
                 pw.Text('Date :'  " ", style: pw.TextStyle(font: newfont,fontSize: 20,color: PdfColors.black),),
                 pw.Text(
-                  historydata.schedule[index].scheduleToDate,
+                  historydata.schedule[index].scheduleToDate as String,
                   style: pw.TextStyle(font: newfont,fontSize: 20.0,color: PdfColors.black),
                   textAlign: pw.TextAlign.center,
                 ),
@@ -57,7 +57,7 @@ Future<Uint8List> makePdf(Guardhistory historydata,int inde) async {
               children: [
                 pw.Text('Time :'  " ", style: pw.TextStyle(font: newfont,fontSize: 20,color: PdfColors.black),),
                 pw.Text(
-                  historydata.schedule[index].scheduleTime,
+                  historydata.schedule[index].scheduleTime as String,
                   style: pw.TextStyle(font: newfont,fontSize: 20.0,color: PdfColors.black),
                   textAlign: pw.TextAlign.center,
                 ),
@@ -68,7 +68,7 @@ Future<Uint8List> makePdf(Guardhistory historydata,int inde) async {
               children: [
                 pw.Text('Status :'  " ", style: pw.TextStyle(font: newfont,fontSize: 20,color: PdfColors.black),),
                 pw.Text(
-                  historydata.schedule[index].status,
+                  historydata.schedule[index].status as String,
                   style: pw.TextStyle(font: newfont,fontSize: 20.0,color: PdfColors.black),
                   textAlign: pw.TextAlign.center,
                 ),
@@ -79,7 +79,7 @@ Future<Uint8List> makePdf(Guardhistory historydata,int inde) async {
               children: [
                 pw.Text('Shift :'  " ", style: pw.TextStyle(font: newfont,fontSize: 20,color: PdfColors.black),),
                 pw.Text(
-                  historydata.schedule[index].shift,
+                  historydata.schedule[index].shift as String,
                   style: pw.TextStyle(font: newfont,fontSize: 20.0,color: PdfColors.black),
                   textAlign: pw.TextAlign.center,
                 ),

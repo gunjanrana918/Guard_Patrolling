@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:guard_patrolling/Controllers/Login_controller.dart';
 import 'package:guard_patrolling/Models/Login_models.dart';
@@ -9,11 +9,8 @@ import 'package:guard_patrolling/Screens/Admin_dashboard.dart';
 import 'package:guard_patrolling/Screens/Dashboard.dart';
 import 'package:guard_patrolling/Screens/MobileOTP_screen.dart';
 import 'package:guard_patrolling/universaldata.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server/gmail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Models/Incident_History.dart';
 
 void main(){
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +41,6 @@ class _LoginscreenState extends State<Loginscreen> {
   late SharedPreferences sharedPreferences;
   get index => null;
   var Generateotp;
-
 
 
   Future<void> main() async{

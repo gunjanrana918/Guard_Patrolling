@@ -25,11 +25,11 @@ class _MissedrounddataState extends State<Missedrounddata> {
             itemBuilder: (BuildContext context, int index){
               return widget.missrounddata!.schedule[index].error==false?
                 Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
-                    height: 120,
+                    height: 100,
                     child: Card(
-                      margin: EdgeInsets.all(3.0),
+                      margin: EdgeInsets.all(5.0),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
                           side: BorderSide(color: Color(0xFF184f8d))),
                       shadowColor: Color(0xFF184f8d),
@@ -51,20 +51,6 @@ class _MissedrounddataState extends State<Missedrounddata> {
                                 child: Text(widget.missrounddata!.schedule[index].locationName.toString(),style: TextStyle(color: Color(0xFF184f8d),fontSize: 16.0,  ),),
                               ),
                             ],),
-                          Padding(padding: EdgeInsets.only(top: 5.0)),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Padding(padding: EdgeInsets.only(top: 5.0,left: 8.0),
-                                    child: Text("Checkpoint ",
-                                      style: TextStyle(color: Colors.black,fontSize: 17.0,  fontWeight: FontWeight.bold ),)),
-                              ),
-                              Expanded(child:  Padding(padding: EdgeInsets.only(top: 5.0,left: 0.0),
-                                  child: Text(widget.missrounddata!.schedule[index].checkPointName.toString(),
-                                    style: TextStyle(color: Color(0xFF184f8d),fontSize: 17.0, ),)),)
-                            ],
-                          ),
                           Padding(padding: EdgeInsets.only(top: 5.0)),
                           Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,

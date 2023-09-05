@@ -74,21 +74,6 @@ class _CompleteroundState extends State<Completeround> {
                                       Flexible(
                                         flex:1,
                                         child: Padding(padding: EdgeInsets.only(top: 5.0,left: 12.0),
-                                            child: Text("Checkpoint",
-                                              style: TextStyle(color: Colors.black,fontSize: 17.0,  fontWeight: FontWeight.bold ),)),
-                                      ),
-                                      Expanded(child:  Padding(padding: EdgeInsets.only(top: 5.0,left: 0.0),
-                                          child: Text(widget.CDAYROUND!.schedule[index].checkPointName,
-                                            style: TextStyle(color: Color(0xFF184f8d),fontSize: 17.0, ),)),)
-                                    ],
-                                  ),
-                                  Padding(padding: EdgeInsets.only(top: 5.0)),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Flexible(
-                                        flex:1,
-                                        child: Padding(padding: EdgeInsets.only(top: 5.0,left: 12.0),
                                           child: Text("Schedule At",style: TextStyle(color: Colors.black,fontSize: 16.0, fontWeight: FontWeight.bold ),),
                                         ),
                                       ),
@@ -156,19 +141,6 @@ class _CompleteroundState extends State<Completeround> {
                                           child: Text(widget.CNIGHTROUND!.schedule[index].locationName,style: TextStyle(color: Color(0xFF184f8d),fontSize: 16.0,  ),),
                                         ),
                                       ] ),
-                                  Padding(padding: EdgeInsets.only(top: 5.0)),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Padding(padding: EdgeInsets.only(top: 5.0,left: 8.0),
-                                            child: Text("Checkpoint",
-                                              style: TextStyle(color: Colors.black,fontSize: 17.0,  fontWeight: FontWeight.bold ),)),
-                                      ),
-                                      Expanded(child: Padding(padding: EdgeInsets.only(top: 5.0,left: 0.0),
-                                          child: Text(widget.CNIGHTROUND!.schedule[index].checkPointName,softWrap: true,
-                                            style: TextStyle(color: Color(0xFF184f8d),fontSize: 17.0, ),)),)],
-                                  ),
                                   Padding(padding: EdgeInsets.only(top: 5.0)),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
